@@ -1,0 +1,25 @@
+** font end
+npm create vite@latest frontend -- --template react
+cd frontend
+npm install
+
+npm install react-router-dom axios react-toastify
+
+taiwind+vite
+
+** backend
+
+npm init -y
+npm install express cors dotenv mongoose
+npm install nodemon --save-dev
+
+
+touch index.js .env
+mkdir routes controllers models middlewares config
+
+
+"start": "node index.js",
+
+
+
+
