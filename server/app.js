@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "API E-commerce Nông Nghiệp đang hoạt động",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { assets } from "../../../admin/src/assets/assets";
+import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 const Header = () => {
   const [visible, setVisible] = useState(false);

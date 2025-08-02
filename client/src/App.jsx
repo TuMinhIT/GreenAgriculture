@@ -1,9 +1,11 @@
 import { assets } from "./assets/assets";
+import Header from "./components/Header";
+import Login from "./pages/Login";
 const App = () => {
   return (
-    <div className="bg-amber-200">
-      <img src={assets.logo} alt="" />
-      hello Thắng
+    <div>
+      {/* <Header /> */}
+      <Login />
     </div>
   );
 };
