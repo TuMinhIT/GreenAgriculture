@@ -1,23 +1,17 @@
-import express from "express";
-import cors from "cors";
-import mongoose from "mongoose";
-import "dotenv/config";
-import productRouter from "./routers/productRouter.js";
-//app config
-const app = express();
-const port = process.env.PORT || 8000;
+const http = require("http");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const app = require("./app");
+const { initSocket } = require("./socket");
 
-// middleware
-app.use(express.json());
-app.use(cors());
+dotenv.config();
+connectDB();
 
-//api end points
+const PORT = process.env.PORT || 5000;
 
-app.use("/api/products", productRouter);
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+const server = http.createServer(app);
+initSocket(server);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+server.listen(PORT, () => {
+  console.log(`🔥 Server is running on http://localhost:${PORT}`);
 });
