@@ -1,15 +1,22 @@
-import React from "react";
+import { assets } from "../assets/assets";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+        style={{ backgroundImage: `url(${assets.loginBg})` }}
+      >
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             Sign In
           </h2>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -55,16 +62,15 @@ const Login = () => {
 
           <div className="mt-6 text-center text-sm text-gray-600">
             Don't have an account?
-            <a
-              href="#"
+            <Link
+              to={"/signup"}
               className="text-indigo-600 hover:text-indigo-500 font-medium"
             >
               Sign up
-            </a>
+            </Link>
           </div>
         </div>
       </div>
-      ;
     </>
   );
 };

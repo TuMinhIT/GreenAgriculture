@@ -1,85 +1,91 @@
-import React from "react";
-
+import { assets } from "../assets/assets";
+import { Link } from "react-router-dom";
 const Signup = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
-    <>
-      <body class="bg-white">
-        url('/img/hero-pattern.svg')
-        <div class="flex min-h-screen bg-white">
-          <div
-            class="w-1/2 bg-cover md:block hidden"
-            style="background-image:  url(https://images.unsplash.com/photo-1520243947988-b7b79f7873e9?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NDd8fGJsYWNrJTIwZm9yZXN0fGVufDB8fDB8eWVsbG93&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60)"
-          ></div>
-          <div class="bg-no-repeat bg-right bg-cover max-w-max max-h-8 h-12 overflow-hidden">
-            <img src="log_in.webp" alt="hey" />
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+      style={{ backgroundImage: `url(${assets.loginBg})` }}
+    >
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          Sign up
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              placeholder="your name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              placeholder="your@email.com"
+            />
           </div>
 
-          <div class="md:w-1/2 max-w-lg mx-auto my-24 px-4 py-5 shadow-none">
-            <div class="text-left p-0 font-sans">
-              <h1 class=" text-gray-800 text-3xl font-medium">
-                Create an account for free
-              </h1>
-              <h3 class="p-1 text-gray-700">
-                Free forever. No payment needed.
-              </h3>
-            </div>
-            <form action="#" class="p-0">
-              <div class="mt-5">
-                <label for="email" class="sc-bqyKva ePvcBv">
-                  Email
-                </label>
-                <input
-                  type="text"
-                  class="block w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent "
-                  placeholder="Email"
-                />
-              </div>
-              <div class="mt-5">
-                <input
-                  type="text"
-                  class="block w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent "
-                  placeholder="User-name"
-                />
-              </div>
-              <div class="mt-5">
-                <input
-                  type="password"
-                  class="block w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent  "
-                  placeholder="Password"
-                />
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              placeholder="••••••••"
+            />
+          </div>
 
-              <div class="mt-6 block p-5 sm:text-sm md:font-sans text-xs text-gray-800">
-                <input type="checkbox" class="inline-block border-0  " />
-                <span display="inline" class="">
-                  By creating an account you are agreeing to our
-                  <a class="" href="#" target="_blank" data-test="Link">
-                    <span class="underline ">Terms and Conditions</span>{" "}
-                  </a>{" "}
-                  and
-                  <a class="" href="#" target="_blank" data-test="Link">
-                    <span class="underline">Privacy Policy</span>{" "}
-                  </a>
-                </span>
-              </div>
+          <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors">
+            Sign Up
+          </button>
+        </form>
 
-              <div class="mt-10">
-                <input
-                  type="submit"
-                  value="Sign up with email"
-                  class="py-3 bg-green-500 text-white w-full rounded hover:bg-green-600"
-                />
-              </div>
-            </form>
-            <a class="" href="#" data-test="Link">
-              <span class="block  p-5 text-center text-gray-800  text-xs ">
-                Already have an account?
-              </span>
-            </a>
+        <div className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?
+          <Link
+            to={"/login"}
+            className="text-indigo-600 hover:text-indigo-500 font-medium"
+          >
+            Sign in
+          </Link>
+        </div>
+
+        <div className="flex flex-col mt-10 gap-4">
+          <div className="flex justify-center flex-row gap-2 items-center">
+            <hr className="w-20" />
+            <span className="text-gray-700 font-bold">or</span>
+            <hr className="w-20" />
+          </div>
+
+          <div className=" justify-center flex flex-row items-center cursor-pointer hover:bg-gray-100   w-full px-4 py-2 border border-gray-500 rounded-lg ">
+            <img className="w-5 h-5 mr-5" src={assets.google} alt="" />
+            Sign in with google
           </div>
         </div>
-      </body>
-    </>
+      </div>
+    </div>
   );
 };
 
