@@ -11,13 +11,13 @@ const Signup = () => {
     >
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Sign up
+          Đăng ký
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
+              Họ và tên
             </label>
             <input
               type="text"
@@ -27,7 +27,7 @@ const Signup = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              Địa chỉ Email
             </label>
             <input
               type="email"
@@ -38,7 +38,7 @@ const Signup = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              Mật khẩu
             </label>
             <input
               type="password"
@@ -48,7 +48,7 @@ const Signup = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
+              Xác nhận mật khẩu
             </label>
             <input
               type="password"
@@ -58,30 +58,30 @@ const Signup = () => {
           </div>
 
           <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors">
-            Sign Up
+            Đăng kí
           </button>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?
+          Đã có tài khoảng?
           <Link
             to={"/login"}
             className="text-indigo-600 hover:text-indigo-500 font-medium"
           >
-            Sign in
+            Đăng nhập
           </Link>
         </div>
 
         <div className="flex flex-col mt-10 gap-4">
           <div className="flex justify-center flex-row gap-2 items-center">
             <hr className="w-20" />
-            <span className="text-gray-700 font-bold">or</span>
+            <span className="text-gray-700 font-bold">hoặc</span>
             <hr className="w-20" />
           </div>
 
           <div className=" justify-center flex flex-row items-center cursor-pointer hover:bg-gray-100   w-full px-4 py-2 border border-gray-500 rounded-lg ">
             <img className="w-5 h-5 mr-5" src={assets.google} alt="" />
-            Sign in with google
+            Đăng nhập với google
           </div>
         </div>
       </div>

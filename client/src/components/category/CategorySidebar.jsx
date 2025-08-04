@@ -6,14 +6,14 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
   const categories = [
     {
       id: "all",
-      name: "Tất cả sản phẩm",
-      icon: "🌱",
+      name: "Sản phẩm q",
+
       count: 150,
     },
     {
       id: "vegetables",
-      name: "Rau củ quả",
-      icon: "🥬",
+      name: "Sản phẩm q",
+
       count: 45,
       subcategories: [
         { id: "leafy-greens", name: "Rau lá xanh", count: 15 },
@@ -23,8 +23,8 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
     },
     {
       id: "fruits",
-      name: "Trái cây",
-      icon: "🍎",
+      name: "Sản phẩm q",
+
       count: 35,
       subcategories: [
         { id: "tropical-fruits", name: "Trái cây nhiệt đới", count: 20 },
@@ -33,8 +33,8 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
     },
     {
       id: "grains",
-      name: "Ngũ cốc",
-      icon: "🌾",
+      name: "Sản phẩm q",
+
       count: 25,
       subcategories: [
         { id: "rice", name: "Gạo", count: 10 },
@@ -44,21 +44,8 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
     },
     {
       id: "dairy",
-      name: "Sản phẩm từ sữa",
-      icon: "🥛",
+      name: "Sản phẩm q",
       count: 20,
-    },
-    {
-      id: "meat",
-      name: "Thịt organic",
-      icon: "🥩",
-      count: 15,
-    },
-    {
-      id: "beverages",
-      name: "Đồ uống",
-      icon: "🧃",
-      count: 10,
     },
   ];
 
@@ -110,10 +97,10 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed lg:sticky top-0 left-0 h-screen 
-          w-80 lg:w-64 bg-white shadow-lg border-r border-gray-200
-          transform transition-transform duration-300 ease-in-out z-50
+        className={`  
+          fixed lg:sticky top-0 left-0 h-screen z-50 
+          w-full bg-white shadow-lg border-r border-gray-200
+          transform transition-transform duration-300 ease-in-out 
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           overflow-y-auto
         `}

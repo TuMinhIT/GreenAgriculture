@@ -1,7 +1,7 @@
 import HomeCarousel from "../components/HomeCarousel";
-import CategorySection from "../components/CategorySection";
+import CategorySection from "../components/category/CategorySection";
 import WhyChooseUs from "../components/WhyChooseUs";
-
+import BestSeller from "../components/BestSeller";
 const HomePage = () => {
   return (
     <div className="min-h-screen">
@@ -15,6 +15,7 @@ const HomePage = () => {
       {/* Category Section */}
       <CategorySection />
       {/* bestseler */}
+      <BestSeller />
 
       {/* Why Choose Us Section */}
       <WhyChooseUs />
