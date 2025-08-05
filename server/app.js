@@ -15,9 +15,15 @@ app.use(express.urlencoded({ extended: false }));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+const categoryRoutes = require("./routes/category.route");
+const productRoutes = require("./routes/product.route");
+const couponRoutes = require('./routes/coupon.route');
+
 // Routes
-app.use('/api/categories', require('./routes/category.route'));
-app.use('/api/products', require('./routes/product.route'));
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/coupons', couponRoutes);
 
 // Test API thử
 app.get("/", (req, res) => {
