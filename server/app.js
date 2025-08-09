@@ -18,14 +18,14 @@ if (process.env.NODE_ENV === "development") {
 
 const categoryRoutes = require("./routes/category.route");
 const productRoutes = require("./routes/product.route");
-const couponRoutes = require('./routes/coupon.route');
-const cartRoutes = require('./routes/cart.route');
+const couponRoutes = require("./routes/coupon.route");
+const cartRoutes = require("./routes/cart.route");
 
 // Routes
-app.use('/api/categories', categoryRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/coupons', couponRoutes);
-app.use('/api/cart', cartRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Test API thử
 app.get("/", (req, res) => {

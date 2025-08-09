@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { assets } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
-const Sidebar = () => {
+const Sidebar = ({ mobi }) => {
   const location = useLocation();
 
   const isActive = (path) => {
@@ -23,6 +23,16 @@ const Sidebar = () => {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-green-300 ">
+          {mobi && (
+            <div className="flex justify-end">
+              <img
+                src={assets.chevron_left}
+                alt=""
+                className="w-8 h-8 cursor-pointer hover:border rounded-2xl"
+              />
+            </div>
+          )}
+
           <ul className="space-y-2 font-medium">
             {/* overview */}
             <li>
@@ -57,6 +67,26 @@ const Sidebar = () => {
                   <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Products</span>
+              </Link>
+            </li>
+
+            {/* category and brand */}
+            <li>
+              <Link to="/categories" className={getLinkClass("/categories")}>
+                <svg
+                  className={`w-5 h-5 transition duration-75 group-hover:text-gray-900 ${
+                    isActive("/categories") ? "text-blue-600" : "text-gray-500"
+                  }`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#666666"
+                >
+                  <path d="m260-520 220-360 220 360H260ZM700-80q-75 0-127.5-52.5T520-260q0-75 52.5-127.5T700-440q75 0 127.5 52.5T880-260q0 75-52.5 127.5T700-80Zm-580-20v-320h320v320H120Zm580-60q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Zm-500-20h160v-160H200v160Zm202-420h156l-78-126-78 126Zm78 0ZM360-340Zm340 80Z" />
+                </svg>
+                <span className="ms-3">Categories/Brand</span>
               </Link>
             </li>
             {/* inbox */}
