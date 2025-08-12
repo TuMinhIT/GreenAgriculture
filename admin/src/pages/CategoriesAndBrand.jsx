@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Categories from "../components/categories/Categories";
+import Brands from "../components/brands/Brands";
 
 export default function CategoryBrandManager() {
   const [brands, setBrands] = useState([]);
@@ -17,17 +18,7 @@ export default function CategoryBrandManager() {
       {/* Category Management */}
       <Categories />
       {/* Brand Management */}
-      {/* <Brands
-        setBrands={setBrands}
-        brands={brands}
-        handleDeleteBrand={handleDeleteBrand}
-        setShowBrandModal={setShowBrandModal}
-      /> */}
-      {/* Category Modal */}
-      {/* {showCategoryModal && <CategoryModel />} */}
-
-      {/* Brand Modal */}
-      {/* {showBrandModal && <BranModel />} */}
+      <Brands />
     </div>
   );
 }

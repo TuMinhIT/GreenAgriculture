@@ -14,12 +14,17 @@ const ShopContextProvider = ({ children }) => {
     localStorage.setItem("token", token);
   }, [token]);
 
+  const logOut = () => {
+    setToken("");
+    localStorage.removeItem("token");
+  };
   const value = {
     token,
     setToken,
     loading,
     setLoading,
     backendUrl,
+    logOut,
   };
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 };

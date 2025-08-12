@@ -1,5 +1,5 @@
 // server/services/category.service.js
-const Category = require('../models/categories.model');
+const Category = require("../models/categories.model");
 
 exports.createCategory = async (data) => {
   const category = new Category(data);
@@ -20,4 +20,8 @@ exports.updateCategory = async (id, data) => {
 
 exports.deleteCategory = async (id) => {
   return await Category.findByIdAndDelete(id);
+};
+
+exports.getCategoryByName = async (name) => {
+  return await Category.findOne({ name });
 };

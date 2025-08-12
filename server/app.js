@@ -20,8 +20,10 @@ const categoryRoutes = require("./routes/category.route");
 const productRoutes = require("./routes/product.route");
 const couponRoutes = require("./routes/coupon.route");
 const cartRoutes = require("./routes/cart.route");
+const brandRoutes = require("./routes/brand.route");
 
 // Routes
+app.use("/api/brands", brandRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/coupons", couponRoutes);

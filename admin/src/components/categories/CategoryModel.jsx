@@ -1,32 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { categoriesService } from "../../service/categoriesService";
 import { toast } from "react-toastify";
 
-const CategoryForm = ({ setShowCategoryModal, add, categories }) => {
+const CategoryModel = ({
+  refetch,
+  setShowCategoryModal,
+  editing,
+  category,
+}) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { createCategory } = categoriesService();
+  const { updateCategory, createCategory } = categoriesService();
+  useEffect(() => {
+    if (category) {
+      setName(category.name);
+      setDescription(category.description);
+    }
+  }, [category]);
 
-  const handleEditCategory = (id) => {
-    // setCategories(categories.filter((c) => c.id !== id));
-  };
-  const handleAddCategory = () => {
+  const handleEditCategory = async () => {
     if (name.trim() === "") return;
+    const newCategory = { name, description };
+    const res = await updateCategory(category._id, newCategory);
+    if (res && res.success) {
+      toast.success("Category updated!");
+      setShowCategoryModal(false);
+      if (refetch) refetch();
+    } else {
+      toast.error(res.message);
+    }
+  };
 
-    createCategory({ name, description }).then((res) => {
-      if (res.success) {
-        categories.unshift(res.category);
-        setShowCategoryModal(false);
-        toast.success("Category added!");
-      } else {
-        toast.error(res.message);
-      }
-    });
+  const handleAddCategory = async () => {
+    if (name.trim() === "") return;
+    const res = await createCategory({ name, description });
+    if (res && res.success) {
+      toast.success("Category added!");
+      setShowCategoryModal(false);
+      refetch();
+    } else {
+      toast.error(res?.message || "Add failed");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!add) return handleEditCategory();
+    if (editing) return handleEditCategory();
     handleAddCategory();
   };
 
@@ -65,19 +84,19 @@ const CategoryForm = ({ setShowCategoryModal, add, categories }) => {
           >
             cancel
           </button>
-          {add ? (
+          {editing ? (
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              Add
+              Update
             </button>
           ) : (
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              Update
+              Add
             </button>
           )}
         </div>
@@ -86,4 +105,4 @@ const CategoryForm = ({ setShowCategoryModal, add, categories }) => {
   );
 };
 
-export default CategoryForm;
+export default CategoryModel;

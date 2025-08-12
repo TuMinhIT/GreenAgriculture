@@ -7,51 +7,42 @@ export const categoriesService = () => {
 
   const getAllCategories = async () => {
     try {
-      setLoading(true);
       const res = await axios.get(backendUrl + "/api/categories");
-      return res.data;
-    } catch (err) {
-      if (err.response) {
-        toast.error("Failed to fetch categories: " + (err.message || ""));
-        console.error(err);
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return null;
       }
-    } finally {
-      setLoading(false);
+      return res.data.data;
+    } catch (err) {
+      toast.error("Failed to fetch categories: " + (err.message || ""));
+      console.error(err);
+      return null;
     }
-    throw new Error("Không thể kết nối tới server");
   };
 
   const createCategory = async (data) => {
-    setLoading(true);
     try {
-      const res = await axios.post(backendUrl + "/api/categories/add", data);
+      const res = await axios.post(backendUrl + "/api/categories", data);
       return res.data;
     } catch (err) {
       toast.error("Failed to create category: " + (err.message || ""));
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const updateCategory = async (data) => {
-    setLoading(true);
+  const updateCategory = async (id, data) => {
     try {
-      const res = await axios.put(backendUrl + "/api/categories/update", data);
+      const res = await axios.put(backendUrl + `/api/categories/${id}`, data);
       return res.data;
     } catch (err) {
       toast.error("Failed to update category: " + (err.message || ""));
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
   const deleteCategory = async (id) => {
     try {
-      const res = await axios.post(backendUrl + "/api/categories/delete", {
-        id,
-      });
+      const res = await axios.delete(backendUrl + `/api/categories/${id}`);
       return res.data;
     } catch (err) {
       toast.error("Failed to delete category: " + (err.message || ""));

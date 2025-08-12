@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Routers from "../Routers";
 import Footer from "../components/Footer";
+import { ToastContainer } from "react-toastify";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,6 +16,7 @@ const DashboardLayout = () => {
       <div className="">
         {<Header currentPage={currentPage} toggleSidebar={toggleSidebar} />}
       </div>
+      <ToastContainer />
 
       <div className="flex flex-col">
         <div className="flex">

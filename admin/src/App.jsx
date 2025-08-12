@@ -1,9 +1,10 @@
+import { ShopContext } from "./context/ShopContext";
 import DashboardLayout from "./pages/DashboardLayout";
 import LoginPage from "./pages/LoginPage";
-import { useState } from "react";
+import { useContext } from "react";
 
 function App() {
-  const [token, setToken] = useState("admin");
+  const { token, setToken } = useContext(ShopContext);
   return (
     <>
       {token ? (

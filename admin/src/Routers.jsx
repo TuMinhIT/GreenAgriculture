@@ -6,6 +6,7 @@ import Products from "./pages/Products";
 import Customers from "./pages/Customers";
 import Inbox from "./pages/Inbox";
 import CategoryBrandManager from "./pages/CategoriesAndBrand";
+
 const Routers = () => {
   return (
     <>

@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { assets } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 const Sidebar = ({ mobi }) => {
+  const { logOut } = useContext(ShopContext);
   const location = useLocation();
 
   const isActive = (path) => {
@@ -149,6 +152,7 @@ const Sidebar = ({ mobi }) => {
             <li>
               <Link
                 to={"/login"}
+                onClick={logOut}
                 className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 group"
               >
                 <svg
