@@ -1,57 +1,70 @@
-// models/users.model.js
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+// models/user.model.js
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Tên người dùng là bắt buộc'],
+      required: true,
       trim: true,
+      minlength: 2,
+      maxlength: 50,
     },
     email: {
       type: String,
-      required: [true, 'Email là bắt buộc'],
+      required: true,
       unique: true,
       lowercase: true,
       trim: true,
     },
     password: {
       type: String,
-      required: [true, 'Mật khẩu là bắt buộc'],
+      required: true,
       minlength: 6,
-      select: false, // Không tự động trả password khi query
     },
     role: {
       type: String,
-      enum: ['customer', 'admin'],
-      default: 'customer',
+      enum: ["customer", "owner", "admin"],
+      default: "customer",
     },
-    address: {
+
+    // OTP fields
+    otpCode: {
       type: String,
-      default: '',
+      default: null, // Lưu code OTP (hashed hoặc plain)
     },
-    phone: {
+    otpExpires: {
+      type: Date,
+      default: null, // Thời gian hết hạn OTP
+    },
+    isVerified: {
+      type: Boolean,
+      default: false, // Đã xác minh email/phone chưa
+    },
+
+    // Token để quản lý đăng nhập
+    refreshToken: {
       type: String,
-      default: '',
+      default: null,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Hash mật khẩu trước khi lưu
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+// Hash password trước khi lưu
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// Phương thức so sánh mật khẩu
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+// Method để check password
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

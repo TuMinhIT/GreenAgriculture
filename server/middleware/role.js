@@ -1,5 +1,5 @@
 // server/middleware/role.js
-exports.checkRole = (...roles) => {
+const checkRole = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: "Permission denied." });
@@ -7,3 +7,4 @@ exports.checkRole = (...roles) => {
     next();
   };
 };
+module.exports = checkRole;
