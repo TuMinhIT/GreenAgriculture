@@ -82,7 +82,24 @@ const resetPassword = async (token, newPassword) => {
 };
 
 const updateProfile = async (userId, data) => {
-  const user = await User.findByIdAndUpdate(userId, data, { new: true });
+  const allowed = ['name', 'phone', 'address'];
+  const updates = {};
+  allowed.forEach((key) => {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      updates[key] = data[key];
+    }
+  });
+
+  console.log(">>> updates to apply:", updates);
+
+  if (Object.keys(updates).length === 0) {
+    return await User.findById(userId);
+  }
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $set: updates },
+    { new: true }
+  );
   return user;
 };
 

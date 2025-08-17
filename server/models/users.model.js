@@ -29,21 +29,32 @@ const userSchema = new mongoose.Schema(
       default: "customer",
     },
 
-    // OTP fields
-    otpCode: {
+    // thêm các field thông tin profile
+    phone: {
       type: String,
-      default: null, // Lưu code OTP (hashed hoặc plain)
+      default: "",
+      trim: true,
     },
-    otpExpires: {
-      type: Date,
-      default: null, // Thời gian hết hạn OTP
+    address: {
+      type: String,
+      default: "",
+      trim: true,
     },
-    isVerified: {
-      type: Boolean,
-      default: false, // Đã xác minh email/phone chưa
+    avatar: {
+      type: String, // URL Cloudinary
+      default: "",
+    },
+    avatarPublicId: {
+      type: String, // Public ID Cloudinary
+      default: "",
     },
 
-    // Token để quản lý đăng nhập
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Token
     refreshToken: {
       type: String,
       default: null,

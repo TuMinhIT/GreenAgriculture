@@ -57,4 +57,5 @@ module.exports = {
   forgotPasswordSchema,
   resetPasswordSchema,
   updateProfileSchema,
+  updateUserSchema,
 };

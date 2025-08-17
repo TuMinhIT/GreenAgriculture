@@ -1,6 +1,6 @@
 // controllers/user.controller.js
 const userService = require('../services/user.service');
-const { sendMail } = require("../utils/emailSender");
+const { cloudinary } = require('../utils/upload');
 
 let otpStore = {};
 
@@ -44,9 +44,12 @@ const resetPassword = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const result = await userService.updateProfile(req.user.id, req.body);
-    res.json(result);
-  } catch (err) { next(err); }
+    const updated = await userService.updateProfile(req.user.id, req.body);
+    if (!updated) return res.status(404).json({ success: false, message: 'User not found' });
+    return res.json({ success: true, user: updated });
+  } catch (err) {
+    next(err);
+  }
 };
 
 const getMyProfile = async (req, res, next) => {
