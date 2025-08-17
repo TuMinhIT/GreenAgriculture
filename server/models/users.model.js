@@ -48,17 +48,6 @@ const userSchema = new mongoose.Schema(
       type: String, // Public ID Cloudinary
       default: "",
     },
-
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-
-    // Token
-    refreshToken: {
-      type: String,
-      default: null,
-    },
   },
   {
     timestamps: true,
@@ -78,4 +67,4 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("users", userSchema);

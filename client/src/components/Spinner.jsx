@@ -1,8 +1,6 @@
-import React from "react";
-
 const Spinner = () => {
   return (
-    <div className=" inset-0 z-51  flex items-center justify-center">
+    <div className=" inset-0 z-51 fixed flex items-center justify-center">
       <div role="status">
         <svg
           aria-hidden="true"

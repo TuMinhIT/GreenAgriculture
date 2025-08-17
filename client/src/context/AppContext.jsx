@@ -1,61 +1,17 @@
 import { createContext, useState, useEffect } from "react";
-import { assets, products } from "../assets/assets";
+import { products } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 // Tạo context
 export const AppContext = createContext();
 
 // Tạo provider
 export const AppProvider = ({ children }) => {
-  const [state, setState] = useState("hello");
-
-  // Thêm state quản lý user và token
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("token") || null;
-  });
-
-  // Lưu vào localStorage khi user/token thay đổi
-  useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
-  }, [user]);
-
-  useEffect(() => {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
-  }, [token]);
-
-  // Hàm login/logout new
-  const login = (userData, accessToken) => {
-    setUser(userData);
-    setToken(accessToken);
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-  };
-
-  const updateUser = (patch) => {
-    setUser((prev) => {
-      const next =
-        typeof patch === "function" ? patch(prev || {}) : { ...(prev || {}), ...patch };
-      try {
-        localStorage.setItem("user", JSON.stringify(next));
-      } catch (err) {
-        // ignore storage errors
-      }
-      return next;
-    });
-  };
-
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
   const currency = "đ";
   const delivery_fee = 1000;
-
   const getCartCount = () => {
     return 5;
   };
@@ -64,23 +20,24 @@ export const AppProvider = ({ children }) => {
     return 2;
   };
 
+  useEffect(() => {
+    if (token === "") {
+      localStorage.removeItem("token");
+    }
+    localStorage.setItem("token", token);
+  }, [token]);
+
   const value = {
-    state,
-    setState,
     currency,
     delivery_fee,
     getCartCount,
     updateQuatity,
     getCartAmount,
     products,
-
-    // thêm auth new
-    user,
     token,
-    login,
-    logout,
-    setUser,
-    updateUser,
+    setToken,
+    backendUrl,
+    navigate,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

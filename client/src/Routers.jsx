@@ -9,20 +9,35 @@ import About from "./pages/About";
 import ProductsPage from "./pages/ProductsPage";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
+import { useContext } from "react";
+import { AppContext } from "./context/AppContext";
 const Routers = () => {
+  const { token } = useContext(AppContext);
   return (
     <>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Chỉ hiện login/signup khi chưa có token */}
+        {!token && (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </>
+        )}
+
+        {/* Luôn có */}
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/products" element={<ProductsPage />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/*" element={<Signup />} />
+
+        {/* Chỉ hiện khi có token */}
+        {token && (
+          <>
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/profile" element={<Profile />} />
+          </>
+        )}
       </Routes>
     </>
   );

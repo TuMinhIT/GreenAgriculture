@@ -10,8 +10,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AppContext);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,7 +23,8 @@ const Login = () => {
       if (!res.ok) throw new Error(data.message || "Login failed");
 
       // fallback token keys: accessToken | token | access_token
-      const tokenFromApi = data.accessToken ?? data.token ?? data.access_token ?? null;
+      const tokenFromApi =
+        data.accessToken ?? data.token ?? data.access_token ?? null;
 
       // Dùng context để login
       login(data.user, tokenFromApi);
