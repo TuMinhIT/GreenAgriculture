@@ -1,14 +1,19 @@
 // utils/sendEmail.js
 const transporter = require("../config/email");
 
-const sendEmail = async (options) => {
-  const mailOptions = {
-    from: `"Green Agriculture 🌱" <${process.env.EMAIL}>`,
-    to: options.email,
-    subject: options.subject,
-    text: options.message
-  };
-  await transporter.sendMail(mailOptions);
+const sendEmail = async ({ to, subject, text, html }) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Green Agriculture 🌱" <${process.env.EMAIL_USERNAME}>`,
+      to,
+      subject,
+      text,
+      html,
+    });
+    console.log("✅ Email sent:", info.response);
+  } catch (error) {
+    console.error("❌ Error sending email:", error);
+  }
 };
 
 module.exports = sendEmail;

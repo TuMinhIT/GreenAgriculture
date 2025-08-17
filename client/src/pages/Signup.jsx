@@ -1,6 +1,6 @@
 import { assets } from "../assets/assets";
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [step, setStep] = useState(1); // 1: nhập email, 2: nhập OTP, 3: nhập form đăng ký
@@ -9,16 +9,17 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/auth/send-otp`, {
+      const res = await fetch(`${API_URL}/users/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, purpose: "register" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
@@ -32,7 +33,7 @@ const Signup = () => {
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/auth/verify-otp`, {
+      const res = await fetch(`${API_URL}/users/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
@@ -53,7 +54,7 @@ const Signup = () => {
       return;
     }
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -61,6 +62,7 @@ const Signup = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       alert("Đăng ký thành công!");
+      navigate("/");
       console.log("User:", data);
     } catch (err) {
       alert(err.message);

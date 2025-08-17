@@ -14,15 +14,22 @@ const generateResetToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
 
-const register = async (data) => {
-  const userExists = await User.findOne({ email: data.email });
-  if (userExists) throw new Error('Email đã được sử dụng');
-  if (!data.password || data.password.length < 6) {
-    throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
+const register = async ({ name, email, password }) => {
+  let user = await User.findOne({ email });
+
+  if (user && user.isVerified) {
+    throw new Error("Email đã được sử dụng");
   }
-  const user = await User.create(data);
-  const token = generateToken(user);
-  return { user, token };
+
+  if (user && !user.isVerified) {
+    user.name = name;
+    user.password = password;
+    user.isVerified = true;
+    await user.save();
+    return user;
+  }
+
+  throw new Error("Bạn cần xác minh OTP trước");
 };
 
 const login = async ({ email, password }) => {
@@ -95,22 +102,28 @@ const updateUser = async (userId, data) => {
     return user;
 }
 
-const sendOTP = async (email) => {
+const sendOTP = async (email, purpose = "register") => {
   let user = await User.findOne({ email });
 
-  if (!user) {
+  if (purpose === "register") {
+    if (user) throw new Error("Email đã tồn tại, vui lòng đăng nhập");
+    // Tạo temp user chờ xác minh OTP
     user = await User.create({ email, name: "Temp User", password: "temp1234" });
+  } else {
+    if (!user) throw new Error("Email chưa đăng ký");
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   user.otpCode = otp;
-  user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 phút
+  user.otpExpires = Date.now() + 5 * 60 * 1000;
   await user.save();
 
+  console.log(`✅ OTP for ${user.email}: ${otp}`);
+
   await sendEmail({
-    email: user.email,
+    to: user.email,
     subject: "Mã OTP xác minh",
-    message: `Mã OTP của bạn là: ${otp} (hết hạn trong 5 phút)`
+    text: `Mã OTP của bạn là: ${otp} (hết hạn trong 5 phút)`
   });
 
   return { message: "OTP đã được gửi đến email" };

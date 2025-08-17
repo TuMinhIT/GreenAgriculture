@@ -4,11 +4,14 @@ const { sendMail } = require("../utils/emailSender");
 
 let otpStore = {};
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   try {
-    const result = await userService.register(req.body);
-    res.status(201).json(result);
-  } catch (err) { next(err); }
+    const { name, email, password } = req.body;
+    const user = await userService.register({ name, email, password });
+    res.status(201).json({ message: "Đăng ký thành công", user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
 
 const login = async (req, res, next) => {
@@ -67,45 +70,23 @@ const updateUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Gửi OTP
-const sendOTP = async (req, res) => {
+const sendOTP = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    otpStore[email] = { otp, expires: Date.now() + 5 * 60 * 1000 }; // Hết hạn 5 phút
-
-    await sendMail(email, "Mã OTP của bạn", `Mã OTP: ${otp}`);
-
-    res.json({ message: "OTP đã được gửi qua email" });
+    const result = await userService.sendOTP(email);
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-// Xác minh OTP
-const verifyOTP = async (req, res) => {
+const verifyOTP = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
-    const record = otpStore[email];
-
-    if (!record) {
-      return res.status(400).json({ error: "Chưa yêu cầu OTP hoặc OTP hết hạn" });
-    }
-
-    if (Date.now() > record.expires) {
-      delete otpStore[email];
-      return res.status(400).json({ error: "OTP đã hết hạn" });
-    }
-
-    if (record.otp !== otp) {
-      return res.status(400).json({ error: "OTP không chính xác" });
-    }
-
-    delete otpStore[email];
-    res.json({ message: "Xác minh OTP thành công" });
+    const result = await userService.verifyOTP(email, otp);
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
