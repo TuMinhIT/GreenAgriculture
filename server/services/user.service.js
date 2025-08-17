@@ -17,6 +17,9 @@ const generateResetToken = (user) => {
 const register = async (data) => {
   const userExists = await User.findOne({ email: data.email });
   if (userExists) throw new Error('Email đã được sử dụng');
+  if (!data.password || data.password.length < 6) {
+    throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
+  }
   const user = await User.create(data);
   const token = generateToken(user);
   return { user, token };
