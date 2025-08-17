@@ -7,7 +7,7 @@ import chevron_left from "./chevron_left.png";
 import chevron_right from "./chevron_right.png";
 import search from "./search.png";
 import close from "./close.png";
-
+import more_vert from "./more_vert.png";
 import density_medium from "./density_medium.png";
 
 export const assets = {
@@ -21,4 +21,16 @@ export const assets = {
   search,
   close,
   density_medium,
+  more_vert,
+};
+
+import screen1 from "./logo.png";
+import screen2 from "./logo.png";
+import screen3 from "./logo.png";
+import screen4 from "./logo.png";
+export const productImages = {
+  screen1,
+  screen2,
+  screen3,
+  screen4,
 };

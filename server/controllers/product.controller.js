@@ -1,5 +1,5 @@
 // controllers/product.controller.js
-const productService = require('../services/product.service');
+const productService = require("../services/product.service");
 
 const createProduct = async (req, res, next) => {
   try {
@@ -22,7 +22,7 @@ const getAllProducts = async (req, res, next) => {
 const getProductById = async (req, res, next) => {
   try {
     const product = await productService.getProductById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
     next(err);
@@ -31,8 +31,12 @@ const getProductById = async (req, res, next) => {
 
 const updateProduct = async (req, res, next) => {
   try {
-    const updatedProduct = await productService.updateProduct(req.params.id, req.body);
-    if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
+    const updatedProduct = await productService.updateProduct(
+      req.params.id,
+      req.body
+    );
+    if (!updatedProduct)
+      return res.status(404).json({ message: "Product not found" });
     res.json(updatedProduct);
   } catch (err) {
     next(err);
@@ -42,8 +46,8 @@ const updateProduct = async (req, res, next) => {
 const deleteProduct = async (req, res, next) => {
   try {
     const deleted = await productService.deleteProduct(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Product not found' });
-    res.json({ message: 'Product deleted successfully' });
+    if (!deleted) return res.status(404).json({ message: "Product not found" });
+    res.json({ message: "Product deleted successfully" });
   } catch (err) {
     next(err);
   }

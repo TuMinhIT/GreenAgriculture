@@ -1,20 +1,20 @@
 // models/products.model.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Tên sản phẩm là bắt buộc'],
+      required: [true, "Tên sản phẩm là bắt buộc"],
       trim: true,
     },
     description: {
       type: String,
-      default: '',
+      default: "",
     },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
+      ref: "Category",
       required: true,
     },
     images: {
@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: [true, 'Giá gốc là bắt buộc'],
+      required: [true, "Giá gốc là bắt buộc"],
       min: 0,
     },
     salePrice: {
@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema(
     },
     quantity: {
       type: Number,
-      required: [true, 'Số lượng tồn kho là bắt buộc'],
+      required: [true, "Số lượng tồn kho là bắt buộc"],
       min: 0,
     },
   },
@@ -41,13 +41,13 @@ const productSchema = new mongoose.Schema(
 );
 
 // Middleware
-productSchema.pre('save', function (next) {
+productSchema.pre("save", function (next) {
   if (!this.salePrice || this.salePrice === 0) {
     this.salePrice = this.price;
   }
   next();
 });
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;

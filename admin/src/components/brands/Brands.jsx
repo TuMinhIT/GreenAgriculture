@@ -22,6 +22,7 @@ const Brands = () => {
     queryKey: ["brands"],
     queryFn: getAllBrands,
     select: (data) => (Array.isArray(data) ? [...data].reverse() : []),
+    
     retry: 1,
   });
 
