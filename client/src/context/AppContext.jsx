@@ -40,6 +40,19 @@ export const AppProvider = ({ children }) => {
     setToken(null);
   };
 
+  const updateUser = (patch) => {
+    setUser((prev) => {
+      const next =
+        typeof patch === "function" ? patch(prev || {}) : { ...(prev || {}), ...patch };
+      try {
+        localStorage.setItem("user", JSON.stringify(next));
+      } catch (err) {
+        // ignore storage errors
+      }
+      return next;
+    });
+  };
+
   const currency = "đ";
   const delivery_fee = 1000;
 
@@ -66,6 +79,8 @@ export const AppProvider = ({ children }) => {
     token,
     login,
     logout,
+    setUser,
+    updateUser,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,21 +1,26 @@
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { assets } from "../assets/assets";
 
 const Profile = () => {
-  const { token, backendUrl } = useContext(AppContext);
+  const { user: contextUser, token, backendUrl, setUser } = useContext(AppContext || {});
+
+  const rawBase = (import.meta.env.VITE_API_URL || backendUrl || "http://localhost:5000")
+    .toString()
+    .replace(/\/+$/, "");
+  const API_BASE = rawBase.endsWith("/api") ? rawBase : `${rawBase}/api`;
+
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [userInfo, setUserInfo] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    avatar: "",
+    name: contextUser?.name || "",
+    email: contextUser?.email || "",
+    phone: contextUser?.phone || "",
+    address: contextUser?.address || "",
+    avatar: contextUser?.avatar || "",
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -24,57 +29,129 @@ const Profile = () => {
     confirmPassword: "",
   });
 
-  // Fetch user info
+  const buildHeaders = () => {
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+      headers["token"] = token;
+    }
+    return headers;
+  };
+
   useEffect(() => {
+    if (contextUser) {
+      setUserInfo({
+        name: contextUser.name || "",
+        email: contextUser.email || "",
+        phone: contextUser.phone || "",
+        address: contextUser.address || "",
+        avatar: contextUser.avatar || "",
+      });
+    }
+
     const fetchUserInfo = async () => {
+      if (!token) return;
       try {
-        if (token) {
-          const response = await axios.get(backendUrl + "/api/user/profile", {
-            headers: { token },
+        const res = await fetch(`${API_BASE}/users/me`, {
+          method: "GET",
+          headers: buildHeaders(),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          // backend trả success=false hoặc lỗi
+          console.warn("fetch profile:", data);
+          return;
+        }
+        if (data?.user) {
+          setUserInfo({
+            name: data.user.name || "",
+            email: data.user.email || "",
+            phone: data.user.phone || "",
+            address: data.user.address || "",
+            avatar: data.user.avatar || "",
           });
-          if (response.data.success) {
-            setUserInfo(response.data.user);
+          if (typeof setUser === "function") {
+            setUser(data.user);
+          } else {
+            // fallback: update localStorage để các tab khác có thể đọc
+            try {
+              localStorage.setItem("user", JSON.stringify(data.user));
+            } catch (err) {
+              // ignore
+            }
           }
         }
-      } catch (error) {
-        console.error(error);
-        toast.error("Không thể tải thông tin người dùng");
+      } catch (err) {
+        console.error("fetch profile error", err);
       }
     };
 
     fetchUserInfo();
-  }, [token, backendUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, contextUser, backendUrl]);
 
-  // Update profile
+  // UPDATE PROFILE (PUT /users/me)
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const response = await axios.put(
-        backendUrl + "/api/user/profile",
-        userInfo,
-        { headers: { token } }
-      );
+    const prev = { ...userInfo }; // rollback nếu lỗi
 
-      if (response.data.success) {
-        toast.success("Cập nhật thông tin thành công!");
-        setIsEditing(false);
-      } else {
-        toast.error(response.data.message);
+    try {
+      // chỉ lấy 3 field cần update, avt thì upload riêng
+      const payload = {
+        name: userInfo.name,
+        phone: userInfo.phone,
+        address: userInfo.address,
+      };
+
+      const res = await fetch(`${API_BASE}/users/me`, {
+        method: "PUT",
+        headers: buildHeaders(),
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setUserInfo(prev); // rollback
+        throw new Error(data?.message || "Cập nhật thất bại");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra khi cập nhật thông tin");
+
+      if (data?.user) {
+        setUserInfo({
+          name: data.user.name || "",
+          email: data.user.email || "", // giữ lại email cho hiển thị
+          phone: data.user.phone || "",
+          address: data.user.address || "",
+          avatar: data.user.avatar || "",
+        });
+
+        if (typeof setUser === "function") {
+          setUser(data.user);
+        } else {
+          try {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          } catch (err) {
+            // ignore
+          }
+        }
+      }
+
+      toast.success("Cập nhật thông tin thành công!");
+      setIsEditing(false);
+    } catch (err) {
+      console.error("update profile err", err);
+      toast.error(err?.message || "Có lỗi xảy ra khi cập nhật thông tin");
     } finally {
       setLoading(false);
     }
   };
 
-  // Change password
+  // CHANGE PASSWORD (PUT /users/change-password)
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
+    // Check confirm password trước khi gọi API
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp!");
       return;
@@ -86,30 +163,28 @@ const Profile = () => {
     }
 
     setLoading(true);
-
     try {
-      const response = await axios.put(
-        backendUrl + "/api/user/change-password",
-        {
-          currentPassword: passwordData.currentPassword,
+      const res = await fetch(`${API_BASE}/users/change-password`, {
+        method: "PUT",
+        headers: buildHeaders(),
+        body: JSON.stringify({
+          oldPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-        },
-        { headers: { token } }
-      );
+        }),
+      });
 
-      if (response.data.success) {
-        toast.success("Đổi mật khẩu thành công!");
-        setPasswordData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra khi đổi mật khẩu");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Đổi mật khẩu thất bại");
+
+      toast.success("Đổi mật khẩu thành công!");
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      console.error("change password err", err);
+      toast.error(err?.message || "Có lỗi xảy ra khi đổi mật khẩu");
     } finally {
       setLoading(false);
     }
@@ -133,7 +208,10 @@ const Profile = () => {
                 alt="Avatar"
                 className="w-20 h-20 rounded-full object-cover border-4 border-green-100"
               />
-              <button className="absolute bottom-0 right-0 bg-green-600 text-white rounded-full p-1 hover:bg-green-700 transition-colors">
+              <button
+                type="button"
+                className="absolute bottom-0 right-0 bg-green-600 text-white rounded-full p-1 hover:bg-green-700 transition-colors"
+              >
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -197,7 +275,7 @@ const Profile = () => {
                       Thông tin cá nhân
                     </h2>
                     <button
-                      onClick={() => setIsEditing(!isEditing)}
+                      onClick={() => setIsEditing((s) => !s)}
                       className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                     >
                       <svg
@@ -284,7 +362,10 @@ const Profile = () => {
                       <div className="flex justify-end space-x-4">
                         <button
                           type="button"
-                          onClick={() => setIsEditing(false)}
+                          onClick={() => {
+                            if (contextUser) setUserInfo(contextUser);
+                            setIsEditing(false);
+                          }}
                           className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                           Hủy
@@ -375,7 +456,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {/* Orders Tab */}
+              {/* Orders & Addresses placeholders */}
               {activeTab === "orders" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 mb-6">
@@ -383,14 +464,11 @@ const Profile = () => {
                   </h2>
                   <div className="text-center py-12">
                     <div className="text-6xl mb-4">📦</div>
-                    <p className="text-gray-500">
-                      Chức năng đang được phát triển
-                    </p>
+                    <p className="text-gray-500">Chức năng đang được phát triển</p>
                   </div>
                 </div>
               )}
 
-              {/* Addresses Tab */}
               {activeTab === "addresses" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 mb-6">
@@ -398,9 +476,7 @@ const Profile = () => {
                   </h2>
                   <div className="text-center py-12">
                     <div className="text-6xl mb-4">📍</div>
-                    <p className="text-gray-500">
-                      Chức năng đang được phát triển
-                    </p>
+                    <p className="text-gray-500">Chức năng đang được phát triển</p>
                   </div>
                 </div>
               )}
