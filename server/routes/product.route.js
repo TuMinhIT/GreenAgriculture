@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const productController = require('../controllers/product.controller');
 const { validateBody } = require('../middleware/validateObjectId');
+const { upload } = require('../utils/upload');
 // const { verifyToken, checkRole } = require('../middleware/auth');
 const {
   createProductSchema,
@@ -17,6 +18,7 @@ router.post(
   "/",
   // verifyToken,
   // checkRole("admin"),
+  upload.array("images", 10),
   validateBody(createProductSchema),
   productController.createProduct
 );
@@ -26,6 +28,7 @@ router.put(
   "/:id",
   // verifyToken,
   // checkRole("admin"),
+  upload.array("images", 10),
   validateBody(updateProductSchema),
   productController.updateProduct
 );

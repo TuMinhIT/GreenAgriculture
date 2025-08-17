@@ -17,10 +17,12 @@ const productSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
-    images: {
-      type: [String], // các URL ảnh
-      default: [],
-    },
+    images: [
+      {
+        url: { type: String, required: true },
+        public_id: { type: String, required: true }, // public_id dùng để xóa ảnh trên Cloudinary
+      },
+    ],
     price: {
       type: Number,
       required: [true, "Giá gốc là bắt buộc"],
@@ -29,7 +31,7 @@ const productSchema = new mongoose.Schema(
     salePrice: {
       type: Number,
       min: 0,
-      default: 0, // nếu không giảm giá
+      default: 0,
     },
     quantity: {
       type: Number,
