@@ -24,9 +24,13 @@ const Signup = () => {
   const sendEmail = useMutation({
     mutationFn: SendOTP,
     onSuccess: (res) => {
-      toast.success("Đã gửi mã OTP qua email của bạn, vui lòng nhập code!");
-      setShowOTP(true);
-      setTokenOTP(res.data.otpToken);
+      if (res.success) {
+        toast.success("Đã gửi mã OTP qua email của bạn, vui lòng nhập code!");
+        setShowOTP(true);
+        setTokenOTP(res.data);
+      } else {
+        toast.error(res.message || "Gửi OTP thất bại");
+      }
     },
     onError: (error) => {
       toast.error(error.message || "Failed to send email");
@@ -74,8 +78,6 @@ const Signup = () => {
 
   // khi nhập xác nhận otp
   const handleVerify = async () => {
-    // console.log(tokenOTP);
-    // console.log(confirmOTP);
     if (tokenOTP && confirmOTP) {
       verifyOTP.mutate({ tokenOTP, confirmOTP });
     }

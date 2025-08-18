@@ -4,9 +4,13 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/emailSender");
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
+  return jwt.sign(
+    { email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
 };
 
 // tạo token reset password (ngắn hạn)
@@ -27,12 +31,26 @@ const register = async ({ name, email, password }) => {
 };
 
 const login = async ({ email, password }) => {
-  const user = await User.findOne({ email }).select("+password");
-  if (!user) throw new Error("Email hoặc mật khẩu không đúng");
+  const user = await User.findOne({ email });
+  if (!user) {
+    return {
+      success: false,
+      message: "Email chưa đăng kí!",
+    };
+  }
+
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) throw new Error("Email hoặc mật khẩu không đúng");
+  if (!isMatch)
+    return {
+      success: false,
+      message: "Mật khẩu không đúng!",
+    };
+
   const token = generateToken(user);
-  return { user, token };
+  return {
+    success: true,
+    data: token,
+  };
 };
 
 const changePassword = async (userId, oldPassword, newPassword) => {
@@ -115,24 +133,35 @@ const updateUser = async (userId, data) => {
 
 const sendOTP = async (email) => {
   try {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    // tạo JWT chứa otp và email, hết hạn sau 2 phút
-    const otpToken = jwt.sign({ email, otp }, process.env.JWT_SECRET, {
-      expiresIn: "3m",
-    });
+    let user = await User.findOne({ email });
+    if (user) {
+      return {
+        success: false,
+        message: "Email đã tồn tại!",
+      };
+    } else {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      // tạo JWT chứa otp và email, hết hạn sau 2 phút
+      const otpToken = jwt.sign({ email, otp }, process.env.JWT_SECRET, {
+        expiresIn: "3m",
+      });
 
-    // suwar 2p
-    await sendEmail({
-      to: email,
-      subject: "Mã OTP xác minh",
-      text: `Mã OTP của bạn là: ${otp} (hết hạn trong 3 phút)`,
-    });
-
-    console.log(otp);
-    console.log(otpToken);
-    return { otpToken };
+      // suwar 2p
+      await sendEmail({
+        to: email,
+        subject: "Mã OTP xác minh",
+        text: `Mã OTP của bạn là: ${otp} (hết hạn trong 3 phút)`,
+      });
+      return {
+        success: true,
+        data: otpToken,
+      };
+    }
   } catch (error) {
-    console.log(error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };
 

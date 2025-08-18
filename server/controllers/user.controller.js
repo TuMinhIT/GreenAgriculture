@@ -18,18 +18,9 @@ const register = async (req, res) => {
 const sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
-    const otpToken = await userService.sendOTP(email);
-    if (otpToken) {
-      res.send({
-        success: true,
-        data: otpToken,
-      });
-    } else {
-      res.send({
-        success: false,
-        message: "Gửi thất bại!",
-      });
-    }
+
+    const result = await userService.sendOTP(email);
+    return res.send(result);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -40,7 +31,7 @@ const verifyOTP = async (req, res) => {
     const { otpToken, OTP } = req.body;
     const result = await userService.verifyOTP(otpToken, OTP);
     if (result) {
-      console.log("success");
+      console.log("register success");
       return res.send({
         success: true,
         message: result,
@@ -54,11 +45,12 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   try {
     const result = await userService.login(req.body);
     res.json(result);
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };

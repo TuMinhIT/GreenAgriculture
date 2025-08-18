@@ -4,33 +4,19 @@ import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 
 export const userService = () => {
-  const API_URL = "hbfw";
-  const { backendUrl } = useContext(AppContext);
+  const { backendUrl, setToken } = useContext(AppContext);
   const resource = "/api/users/";
-  const LoginUser = async (data) => {
+  const LoginUser = async ({ email, password }) => {
     try {
-      const res = await fetch(`${API_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await axios.post(backendUrl + resource + "login", {
+        email,
+        password,
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
-
-      // fallback token keys: accessToken | token | access_token
-      const tokenFromApi =
-        data.accessToken ?? data.token ?? data.access_token ?? null;
-
-      // Dùng context để login
-      login(data.user, tokenFromApi);
-
-      console.log("Login -> user:", data.user, "token:", tokenFromApi);
-      alert("Đăng nhập thành công!");
-      navigate("/");
+      return res.data;
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -39,11 +25,7 @@ export const userService = () => {
       const res = await axios.post(backendUrl + resource + "send-otp", {
         email: data,
       });
-      if (res.data.success) {
-        return res.data;
-      } else {
-        throw new Error(res.data.message || "Gửi OTP thất bại");
-      }
+      return res.data;
     } catch (err) {
       console.error(err.message);
       throw new Error(err.response?.data?.message || err.message);
@@ -71,8 +53,6 @@ export const userService = () => {
         password,
       });
       return res.data;
-
-      return;
     } catch (err) {
       alert(err.message);
     }
