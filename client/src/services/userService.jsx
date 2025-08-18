@@ -50,28 +50,29 @@ export const userService = () => {
     }
   };
 
-  const VerifyOTP = async (data) => {
+  const VerifyOTP = async ({ tokenOTP, confirmOTP }) => {
     try {
-      const res = await fetch(`${API_URL}/users/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+      const res = await axios.post(backendUrl + resource + "verify-otp", {
+        otpToken: tokenOTP,
+        OTP: confirmOTP,
       });
-      const data = await res.json();
-      if (!res.ok) alert("OTP hợp lệ, tiếp tục đăng ký!");
-      setStep(3);
+      return res.data;
     } catch (err) {
-      alert(err.message);
-      throw new Error(data.message);
+      toast.error(err.message);
+      throw new Error(err.message);
     }
   };
 
-  const Register = async (data) => {
+  const Register = async ({ name, email, password }) => {
     try {
-      const res = await axios.post(backendUrl + resource + "register", data);
-      if (!res.ok) throw new Error(data.message);
-      toast.success("Đăng kí thành công!");
-      console.log("User:", data);
+      const res = await axios.post(backendUrl + resource + "register", {
+        name,
+        email,
+        password,
+      });
+      return res.data;
+
+      return;
     } catch (err) {
       alert(err.message);
     }

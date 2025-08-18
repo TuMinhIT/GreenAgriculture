@@ -18,20 +18,12 @@ const generateResetToken = (user) => {
 
 const register = async ({ name, email, password }) => {
   let user = await User.findOne({ email });
-
-  if (user && user.isVerified) {
+  if (user) {
     throw new Error("Email đã được sử dụng");
   }
-
-  if (user && !user.isVerified) {
-    user.name = name;
-    user.password = password;
-    user.isVerified = true;
-    await user.save();
-    return user;
-  }
-
-  throw new Error("Bạn cần xác minh OTP trước");
+  const newUser = new User({ name, email, password });
+  newUser.save();
+  return newUser;
 };
 
 const login = async ({ email, password }) => {
@@ -122,30 +114,35 @@ const updateUser = async (userId, data) => {
 };
 
 const sendOTP = async (email) => {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  try {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // tạo JWT chứa otp và email, hết hạn sau 2 phút
+    const otpToken = jwt.sign({ email, otp }, process.env.JWT_SECRET, {
+      expiresIn: "3m",
+    });
 
-  // tạo JWT chứa otp và email, hết hạn sau 5 phút
-  const otpToken = jwt.sign({ email, otp }, process.env.JWT_SECRET, {
-    expiresIn: "2m",
-  });
+    // suwar 2p
+    await sendEmail({
+      to: email,
+      subject: "Mã OTP xác minh",
+      text: `Mã OTP của bạn là: ${otp} (hết hạn trong 3 phút)`,
+    });
 
-  await sendEmail({
-    to: email,
-    subject: "Mã OTP xác minh",
-    text: `Mã OTP của bạn là: ${otp} (hết hạn trong 2 phút)`,
-  });
-
-  return { otpToken };
+    console.log(otp);
+    console.log(otpToken);
+    return { otpToken };
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
-const verifyOTP = async (otpToken, otpInput) => {
+const verifyOTP = async (otpToken, OTP) => {
   try {
     const decoded = jwt.verify(otpToken, process.env.JWT_SECRET);
 
-    if (decoded.otp !== otpInput) {
+    if (decoded.otp !== OTP) {
       throw new Error("OTP không chính xác");
     }
-
     return { message: "Xác minh OTP thành công" };
   } catch (err) {
     throw new Error("OTP không hợp lệ hoặc đã hết hạn");

@@ -2,13 +2,14 @@
 const userService = require("../services/user.service");
 const { cloudinary } = require("../utils/upload");
 
-let otpStore = {};
-
 const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await userService.register({ name, email, password });
-    res.status(201).json({ message: "Đăng ký thành công", user });
+    res.send({
+      success: true,
+      data: user.name,
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -17,8 +18,6 @@ const register = async (req, res) => {
 const sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
-    console.log(req.body);
-
     const otpToken = await userService.sendOTP(email);
     if (otpToken) {
       res.send({
@@ -36,13 +35,22 @@ const sendOTP = async (req, res) => {
   }
 };
 
-const verifyOTP = async (req, res, next) => {
+const verifyOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
-    const result = await userService.verifyOTP(email, otp);
-    res.json(result);
+    const { otpToken, OTP } = req.body;
+    const result = await userService.verifyOTP(otpToken, OTP);
+    if (result) {
+      console.log("success");
+      return res.send({
+        success: true,
+        message: result,
+      });
+    }
   } catch (err) {
-    next(err);
+    return res.send({
+      success: false,
+      message: err.message,
+    });
   }
 };
 

@@ -1,46 +1,101 @@
 import { assets } from "../assets/assets";
 import { useState } from "react";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ConfirmOTP from "../components/ConfirmOTP";
 import { toast } from "react-toastify";
 import { userService } from "../services/userService";
 import Spinner from "../components/Spinner";
 import { useMutation } from "@tanstack/react-query";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 const Signup = () => {
   const [showOTP, setShowOTP] = useState(false);
+  const [tokenOTP, setTokenOTP] = useState("");
+  const [confirmOTP, setConfirmOTP] = useState("");
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const { SendOTP, VerifyOTP, Register } = userService();
+  const { navigate } = useContext(AppContext);
 
   const sendEmail = useMutation({
     mutationFn: SendOTP,
     onSuccess: (res) => {
       toast.success("Đã gửi mã OTP qua email của bạn, vui lòng nhập code!");
       setShowOTP(true);
-      console.log(res.data);
+      setTokenOTP(res.data.otpToken);
     },
     onError: (error) => {
       toast.error(error.message || "Failed to send email");
     },
   });
 
-  const handleSignUp = async (e) => {
+  const verifyOTP = useMutation({
+    mutationFn: VerifyOTP,
+    onSuccess: (res) => {
+      if (res.success) {
+        handleSignUp();
+      } else {
+        toast.error(res.message);
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to send email");
+    },
+  });
+  const register = useMutation({
+    mutationFn: Register,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success(" Đăng kí thành công");
+        navigate("/login");
+      } else {
+        toast.error(res.message);
+      }
+    },
+  });
+
+  // gửi mail xác nhận otp
+  const handleSendEmail = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp!");
       return;
     }
+    if (password.length < 6) {
+      toast.error("Mật khẩu có độ dài ít nhất 6 kí tự!");
+      return;
+    }
     sendEmail.mutate(email);
+  };
+
+  // khi nhập xác nhận otp
+  const handleVerify = async () => {
+    // console.log(tokenOTP);
+    // console.log(confirmOTP);
+    if (tokenOTP && confirmOTP) {
+      verifyOTP.mutate({ tokenOTP, confirmOTP });
+    }
+  };
+  // auto ddăng kí nếu xác thực success
+  const handleSignUp = async () => {
+    register.mutate({ name, email, password });
   };
 
   return (
     <>
       {sendEmail.isPending && <Spinner />}
-
-      {showOTP && <ConfirmOTP setShowOTP={setShowOTP} />}
+      {verifyOTP.isPending && <Spinner />}
+      {showOTP && (
+        <ConfirmOTP
+          setConfirmOTP={setConfirmOTP}
+          handleVerify={handleVerify}
+          setShowOTP={setShowOTP}
+        />
+      )}
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
         style={{ backgroundImage: `url(${assets.loginBg})` }}
@@ -50,7 +105,7 @@ const Signup = () => {
             Đăng ký
           </h2>
 
-          <form onSubmit={handleSignUp} className="space-y-4">
+          <form onSubmit={handleSendEmail} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Họ và tên
