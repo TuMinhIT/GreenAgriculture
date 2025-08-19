@@ -55,6 +55,16 @@ const login = async (req, res) => {
   }
 };
 
+const loginAdmin = async (req, res, next) => {
+  try {
+    const result = await userService.loginAdmin(req.body);
+    res.json(result);
+  } catch (err) {
+    console.log(err.message);
+    next(err);
+  }
+};
+
 const changePassword = async (req, res, next) => {
   try {
     const result = await userService.changePassword(
@@ -163,4 +173,5 @@ module.exports = {
   updateUser,
   getUserById,
   getAllUsers,
+  loginAdmin,
 };

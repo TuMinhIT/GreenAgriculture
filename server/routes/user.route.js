@@ -21,6 +21,13 @@ router.post("/send-otp", userController.sendOTP);
 router.post("/verify-otp", userController.verifyOTP);
 
 router.post("/login", validateBody(loginSchema), userController.login);
+
+router.post(
+  "/loginAdmin",
+  validateBody(loginSchema),
+  userController.loginAdmin
+);
+
 router.post(
   "/forgot-password",
   validateBody(forgotPasswordSchema),
@@ -49,6 +56,7 @@ router.put(
 
 // Admin routes
 router.use(verifyToken, checkRole("admin"));
+
 router.get("/", checkRole("admin"), userController.getAllUsers);
 router.get("/:id", checkRole("admin"), userController.getUserById);
 router.delete("/:id", checkRole("admin"), userController.deleteUser);

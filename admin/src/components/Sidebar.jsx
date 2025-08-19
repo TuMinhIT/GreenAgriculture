@@ -22,10 +22,10 @@ const Sidebar = ({ mobi }) => {
     <div>
       <aside
         id="sidebar-multi-level-sidebar"
-        className=" w-64 h-screen transition-transform  sm:translate-x-0"
+        className=" w-64 h-screen transition-transform  mt-10 sm:translate-x-0"
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-green-300 ">
+        <div className=" px-3  overflow-y-auto  ">
           {mobi && (
             <div className="flex justify-end">
               <img

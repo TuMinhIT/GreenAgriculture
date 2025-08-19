@@ -20,6 +20,8 @@ const generateResetToken = (user) => {
   });
 };
 
+//service for customer
+
 const register = async ({ name, email, password }) => {
   let user = await User.findOne({ email });
   if (user) {
@@ -119,18 +121,6 @@ const getMyProfile = async (userId) => {
   return await User.findById(userId);
 };
 
-const deleteUser = async (userId) => {
-  const user = await User.findByIdAndDelete(userId);
-  if (!user) throw new Error("Người dùng không tồn tại");
-  return { message: "Xóa người dùng thành công" };
-};
-
-const updateUser = async (userId, data) => {
-  const user = await User.findByIdAndUpdate(userId, data, { new: true });
-  if (!user) throw new Error("Người dùng không tồn tại");
-  return user;
-};
-
 const sendOTP = async (email) => {
   try {
     let user = await User.findOne({ email });
@@ -178,6 +168,50 @@ const verifyOTP = async (otpToken, OTP) => {
   }
 };
 
+//service for admin manager
+
+const loginAdmin = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return {
+      success: false,
+      message: "Bạn không được phép truy cập!!",
+    };
+  }
+
+  if (user.role !== "admin") {
+    return {
+      success: false,
+      message: "Bạn không được phép truy cập!!",
+    };
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch)
+    return {
+      success: false,
+      message: "Mật khẩu không đúng!",
+    };
+
+  const token = generateToken(user);
+  return {
+    success: true,
+    data: token,
+  };
+};
+
+const deleteUser = async (userId) => {
+  const user = await User.findByIdAndDelete(userId);
+  if (!user) throw new Error("Người dùng không tồn tại");
+  return { message: "Xóa người dùng thành công" };
+};
+
+const updateUser = async (userId, data) => {
+  const user = await User.findByIdAndUpdate(userId, data, { new: true });
+  if (!user) throw new Error("Người dùng không tồn tại");
+  return user;
+};
+
 module.exports = {
   register,
   login,
@@ -190,4 +224,5 @@ module.exports = {
   verifyOTP,
   deleteUser,
   updateUser,
+  loginAdmin,
 };

@@ -1,18 +1,48 @@
+import { useContext, useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import Footer from "../components/Footer";
+import { userService } from "../service/userService";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "../components/Spinner";
+import { toast, ToastContainer } from "react-toastify";
+import { ShopContext } from "../context/ShopContext";
+const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { LoginUser } = userService();
+  const { setToken } = useContext(ShopContext);
 
-const LoginPage = ({ token, setToken }) => {
+  const login = useMutation({
+    mutationFn: LoginUser,
+    onSuccess: (res) => {
+      if (res.success) {
+        setToken(res.data);
+        navigate("/");
+        console.log("login success");
+      } else {
+        toast.error(res.message);
+      }
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // localStorage.setItem("token", "admin");
-    setToken("admin");
+    login.mutate({ email, password });
   };
+  useEffect(() => {
+    toast.warning("tài khoảng admin:vominhtu1212004@gmail.com, pass: 111111");
+  }, []);
   return (
     <>
+      <ToastContainer />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="w-full max-w-6xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div className="flex flex-col lg:flex-row">
+              {login.isPending && <Spinner />}
               {/* Form Section */}
               <div className="flex-1 p-8 lg:p-12">
                 <div className="max-w-md mx-auto">
@@ -32,6 +62,8 @@ const LoginPage = ({ token, setToken }) => {
                       </label>
                       <input
                         type="email"
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                       />
@@ -43,6 +75,9 @@ const LoginPage = ({ token, setToken }) => {
                       </label>
                       <input
                         type="password"
+                        // value={password}
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                       />

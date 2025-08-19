@@ -21,7 +21,7 @@ const DashboardLayout = () => {
       <div className="flex flex-col">
         <div className="flex">
           {/* desktop */}
-          <div className="hidden lg:block w-64  shadow-lg border-r border-gray-500 ">
+          <div className="hidden lg:block w-64 bg-green-300 shadow-lg border-r border-gray-500 ">
             <Sidebar mobi={false} />
           </div>
 

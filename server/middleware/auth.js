@@ -21,4 +21,4 @@ exports.checkRole = (...roles) => {
     }
     next();
   };
-}
+};

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { AppContext } from "../context/AppContext";
+import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
 
@@ -9,7 +9,7 @@ const Profile = () => {
     token,
     backendUrl,
     setUser,
-  } = useContext(AppContext || {});
+  } = useContext(ShopContext || {});
 
   const rawBase = (
     import.meta.env.VITE_API_URL ||
