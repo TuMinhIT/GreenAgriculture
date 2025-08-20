@@ -5,7 +5,7 @@ const BestSeller = () => {
   const currentProducts = products.slice(0, 10);
   return (
     <section className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-6">
         {/* Header */}
         <div className="text-center mb-12">
           <Title text1={"SẢN PHẨM"} text2={"BÁN CHẠY"} />

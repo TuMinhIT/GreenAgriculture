@@ -11,6 +11,7 @@ const {
 
 // Public routes
 router.get("/", categoryController.getCategories);
+
 router.get("/:id", categoryController.getCategory);
 
 // Protected routes (admin only)

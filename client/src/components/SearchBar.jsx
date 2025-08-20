@@ -1,10 +1,8 @@
-import React from "react";
-
 const SearchBar = () => {
   return (
     <div>
       {/* Mobile Search Bar */}
-      <div className="md:hidden pb-4">
+      <div className="  pb-4">
         <div className="relative">
           <input
             type="text"

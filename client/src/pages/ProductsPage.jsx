@@ -5,6 +5,7 @@ import ProductCard from "../components/products/ProductCard";
 import { products } from "../assets/assets";
 import Pagination from "../components/products/Pagination";
 import ProductNotFound from "../components/products/ProductNotFound";
+import SearchBar from "../components/SearchBar";
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState(products);
@@ -87,14 +88,15 @@ const Products = () => {
           <div className="p-4 lg:p-8">
             {/* Header */}
             <div className="mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between   gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between  gap-4">
                 <div>
-                  <h2 className="text-4xl">Tất cã sản phẩm</h2>
+                  <h2 className="text-3xl">Tất cã sản phẩm</h2>
                   <p className="text-gray-600 mt-2">
                     {currentProducts.length} trong tổng số{" "}
                     {filteredProducts.length} sản phẩm
                   </p>
                 </div>
+                <SearchBar />
 
                 {/* Controls */}
                 <div className="flex flex-wrap items-center gap-4">
