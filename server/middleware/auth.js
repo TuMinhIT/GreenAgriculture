@@ -1,6 +1,6 @@
 // server/middleware/auth.js
 const jwt = require("jsonwebtoken");
-
+const User = require("../models/users.model");
 exports.verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1]; // Format: "Bearer TOKEN"
   if (!token) return res.status(401).json({ message: "No token provided." });
@@ -21,4 +21,53 @@ exports.checkRole = (...roles) => {
     }
     next();
   };
+};
+
+exports.authAdmin = async (req, res, next) => {
+  const token = req.headers.token; // Format: "token: token...."
+  if (!token)
+    return res.send({
+      success: false,
+      message: "Unauthorized!",
+    });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role === "admin")
+      //  email, role, ...
+      next();
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: "Invalid or expired token.",
+    });
+  }
+};
+
+exports.authUser = async (req, res, next) => {
+  const token = req.headers.token; // Format: "token: token...."
+  if (!token)
+    return res.send({
+      success: false,
+      message: "Unauthorized!",
+    });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.email) {
+      const user = await User.findOne({ email });
+      if (user) {
+        next();
+      } else
+        return res.send({
+          success: false,
+          message: "Unauthorized!",
+        });
+    }
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: "Invalid or expired token.",
+    });
+  }
 };

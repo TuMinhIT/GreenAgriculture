@@ -8,13 +8,23 @@ const productSchema = new mongoose.Schema(
       required: [true, "Tên sản phẩm là bắt buộc"],
       trim: true,
     },
+    barcode: {
+      type: String,
+      required: [true, "Mã sản phẩm là bắt buộc"],
+      trim: true,
+    },
     description: {
       type: String,
       default: "",
     },
-    categoryId: {
+    category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      ref: "categories",
+      required: true,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "brands",
       required: true,
     },
     images: [
@@ -23,17 +33,24 @@ const productSchema = new mongoose.Schema(
         public_id: { type: String, required: true }, // public_id dùng để xóa ảnh trên Cloudinary
       },
     ],
-    price: {
+    cost: {
       type: Number,
       required: [true, "Giá gốc là bắt buộc"],
       min: 0,
     },
-    salePrice: {
+    price: {
       type: Number,
       min: 0,
+      required: [true, "Giá bán là bắt buộc"],
       default: 0,
     },
-    quantity: {
+    warrantyMonths: {
+      type: Number,
+      min: 0,
+      required: [true, "Tháng bảo hành là bắt buộc!"],
+      default: 0,
+    },
+    stock: {
       type: Number,
       required: [true, "Số lượng tồn kho là bắt buộc"],
       min: 0,
@@ -50,6 +67,6 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("products", productSchema);
 
 module.exports = Product;

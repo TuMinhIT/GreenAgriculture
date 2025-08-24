@@ -1,26 +1,26 @@
-const Product = require('../models/products.model');
-const { cloudinary } = require('../utils/upload');
+const Product = require("../models/products.model");
+const { cloudinary } = require("../utils/upload");
 
 const createProduct = async (data, files) => {
-  const images = files.map(file => ({
+  const images = files.map((file) => ({
     url: file.path,
-    public_id: file.filename
+    public_id: file.filename,
   }));
 
   const product = new Product({
     ...data,
-    images
+    images,
   });
 
   return await product.save();
 };
 
 const getAllProducts = async () => {
-  return await Product.find().populate('categoryId');
+  return await Product.find().populate("category").populate("brand");
 };
 
 const getProductById = async (id) => {
-  return await Product.findById(id).populate('categoryId');
+  return await Product.findById(id).populate("category");
 };
 
 const updateProduct = async (id, data, files) => {
@@ -32,9 +32,9 @@ const updateProduct = async (id, data, files) => {
     for (const img of product.images) {
       await cloudinary.uploader.destroy(img.public_id);
     }
-    data.images = files.map(file => ({
+    data.images = files.map((file) => ({
       url: file.path,
-      public_id: file.filename
+      public_id: file.filename,
     }));
   }
 

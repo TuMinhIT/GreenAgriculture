@@ -1,25 +1,24 @@
-const router = require('express').Router();
-const productController = require('../controllers/product.controller');
-const { validateBody } = require('../middleware/validateObjectId');
-const { upload } = require('../utils/upload');
-// const { verifyToken, checkRole } = require('../middleware/auth');
+const router = require("express").Router();
+const productController = require("../controllers/product.controller");
+const { validateBody } = require("../middleware/validateObjectId");
+const { upload } = require("../utils/upload");
+const { authAdmin, authUser } = require("../middleware/auth");
 const {
   createProductSchema,
   updateProductSchema,
-} = require('../validations/product.validation');
+} = require("../validations/product.validation");
 
 // Public route
-router.get('/', productController.getAllProducts);
-router.get('/:id', productController.getProductById);
+router.get("/", productController.getAllProducts);
+router.get("/:id", productController.getProductById);
 
 // Protected routes (admin only)
 // POST: Tạo sản phẩm mới
 router.post(
   "/",
-  // verifyToken,
-  // checkRole("admin"),
+  authAdmin,
   upload.array("images", 10),
-  validateBody(createProductSchema),
+  // validateBody(createProductSchema), cái quỷ này bị lỗi
   productController.createProduct
 );
 
@@ -28,8 +27,9 @@ router.put(
   "/:id",
   // verifyToken,
   // checkRole("admin"),
+  authAdmin,
   upload.array("images", 10),
-  validateBody(updateProductSchema),
+  // validateBody(updateProductSchema),
   productController.updateProduct
 );
 
@@ -38,6 +38,7 @@ router.delete(
   "/:id",
   // verifyToken,
   // checkRole("admin"),
+  authAdmin,
   productController.deleteProduct
 );
 

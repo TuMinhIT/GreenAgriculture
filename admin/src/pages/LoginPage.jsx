@@ -65,7 +65,7 @@ const LoginPage = () => {
                         required
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                       />
                     </div>
 
@@ -79,7 +79,7 @@ const LoginPage = () => {
                         required
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                       />
                     </div>
 
@@ -87,7 +87,7 @@ const LoginPage = () => {
                       <label className="flex items-center">
                         <input
                           type="checkbox"
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          className="w-4 h-4 text-green-600 border-gray-300 rounded "
                         />
                         <span className="ml-2 text-sm text-gray-600">
                           Remember me
@@ -95,7 +95,7 @@ const LoginPage = () => {
                       </label>
                       <a
                         href="#"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="text-sm text-green-600 hover:text-green-800 font-medium"
                       >
                         Forgot password?
                       </a>
@@ -103,7 +103,7 @@ const LoginPage = () => {
 
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:-translate-y-0.5"
+                      className="w-full bg-green-500  text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-600  focus:ring-4  transition-all duration-200 transform hover:-translate-y-0.5"
                     >
                       Sign In
                     </button>
@@ -112,7 +112,7 @@ const LoginPage = () => {
               </div>
 
               {/* Image Section */}
-              <div className="hidden lg:flex bg-gradient-to-br from-blue-600 to-indigo-700 p-8 lg:p-12  items-center justify-center">
+              <div className="hidden lg:flex bg-gradient-to-br bg-green-500 p-8 lg:p-12  items-center justify-center">
                 <div className="text-center text-white">
                   <img
                     className="rounded-2xl w-full max-w-md mx-auto shadow-2xl mb-6"

@@ -1,34 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { categoriesService } from "../../service/categoriesService";
-import { ProductsService } from "../../service/productsService";
-import { brandsService } from "../../service/brandsService";
 import ImageForm from "./ImageForm";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
-import { ShopContext } from "../../context/ShopContext";
-import Spinner from "../Spinner";
-const AddProduct = ({ setShowAddModal }) => {
-  const { currency } = useContext(ShopContext);
-  const { getAllCategories } = categoriesService();
-  const { getAllBrands } = brandsService();
-  const { createProduct } = ProductsService();
+import { useQuery } from "@tanstack/react-query";
+import { categoriesService } from "../../services/categoriesService";
+import { brandsService } from "../../services/brandsService";
 
+import { productHooks } from "../../hooks/productHooks";
+import Spinner from "../Spinner";
+
+const EditProduct = ({ product, setShowEditModal }) => {
+  const { getAllCategories } = categoriesService();
+  const { useUpdateProduct } = productHooks();
+
+  const { getAllBrands } = brandsService();
   const [form, setForm] = useState({
-    name: "",
-    barcode: "",
-    category: "",
-    brand: "",
-    price: "",
-    cost: "",
-    stock: "",
-    warrantyMonths: "",
-    description: "",
-    bestseller: false,
-    images: [],
+    name: product.name,
+    barcode: product.barcode,
+    category: product.category,
+    brand: product.brand,
+    price: product.price,
+    cost: product.cost,
+    stock: product.stock,
+    warrantyMonths: product.warrantyMonths,
+    description: product.description,
+    bestseller: product.bestseller,
+    images: product.images,
   });
-  const [imagePreviews, setImagePreviews] = useState([]);
-  const maxImage = 5;
+  const [imagePreviews, setImagePreviews] = useState(product.images);
+  const maxImage = 9;
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -39,22 +38,7 @@ const AddProduct = ({ setShowAddModal }) => {
     queryFn: getAllBrands,
   });
 
-  const queryClient = useQueryClient();
-  const addProduct = useMutation({
-    mutationFn: createProduct,
-    onSuccess: (res) => {
-      if (res.success) {
-        toast.success("Product added!");
-        queryClient.invalidateQueries("products");
-        setShowAddModal(false);
-      } else {
-        toast.error(res.message);
-      }
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
+  const { mutate, isPending } = useUpdateProduct();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -66,29 +50,25 @@ const AddProduct = ({ setShowAddModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (form.images.length === 0) {
-      toast.error("Must have least 1 image!");
+      toast.error("Must have at least 1 image!");
       return;
     }
 
-    if (form.brand == "") {
-      form.brand = brands[0]._id;
-    }
-
-    if (form.category == "") {
-      form.category = categories[0]._id;
-    }
-
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (key === "images") {
-        value.forEach((img) => formData.append("images", img));
-      } else {
-        formData.append(key, value);
+    mutate(
+      { id: product._id, data: form },
+      {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success("Product updated!");
+            setShowEditModal(false);
+          } else {
+            toast.error(res.message);
+          }
+        },
       }
-    });
-
-    addProduct.mutate({ data: formData });
+    );
   };
 
   const handleImageChange = (e) => {
@@ -117,21 +97,29 @@ const AddProduct = ({ setShowAddModal }) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div
+        className={` fixed  inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-sm`}
+      >
         <div
           className="absolute inset-0 cursor-pointer"
-          // onClick={() => setShowAddModal(false)}
+          onClick={() => setShowEditModal(false)}
         />
-        <div className="relative w-full max-w-4xl h-[90vh] mt-10 rounded-2xl shadow-2xl border border-gray-300 bg-white flex flex-col overflow-hidden">
+        <div className="mb-10 relative w-full max-w-4xl h-[90vh] mt-10 rounded-2xl shadow-2xl border border-gray-300 bg-white flex flex-col overflow-hidden">
           <div className="flex flex-col flex-1 overflow-y-auto hide-scrollbar p-6">
-            <h2 className="text-2xl text-left font-bold">Add new product</h2>
-
+            <h2 className="relative text-2xl text-left font-bold">
+              Add new product
+            </h2>
             <div
-              onClick={() => setShowAddModal(false)}
-              className="absolute top-4 right-6 cursor-pointer hover:scale-110"
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-4 right-4 cursor-pointer"
             >
               X
             </div>
+            {isPending && (
+              <div className="absolute top-[50%] left-[50%]">
+                <Spinner />
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="pt-2">
               {/* <!-- Image gallery --> */}
 
@@ -146,26 +134,25 @@ const AddProduct = ({ setShowAddModal }) => {
               <div className="p-5 flex flex-col gap-3">
                 <div>
                   <label className="font-bold" htmlFor="barcode">
-                    Mã sản phẩm:
+                    Barcode:
                   </label>
                   <input
                     onChange={handleChange}
                     required
-                    className="border-0 border-b border-b-gray-400 px-2 py-1 w-1/3 mx-3 focus:outline-none focus:border-green-500 transition-all duration-200 rounded-none"
+                    className="border-0 border-b border-b-gray-400 px-2 py-1 w-1/3 mx-3 focus:outline-none focus:border-b-blue-500 transition-all duration-200 rounded-none"
                     type="text"
                     name="barcode"
                     defaultValue={form.barcode}
-                    id=""
                   />
                 </div>
                 <div>
                   <label className="font-bold" htmlFor="barcode">
-                    Tên sản phẩm:
+                    Product name:
                   </label>
                   <input
-                    required
                     onChange={handleChange}
-                    className="border-0 border-b border-b-gray-400 px-2 py-1 w-2/3 mx-3 focus:outline-none focus:border-green-500 transition-all duration-200 rounded-none"
+                    required
+                    className="border-0 border-b border-b-gray-400 px-2 py-1 w-2/3 mx-3 focus:outline-none focus:border-b-blue-500 transition-all duration-200 rounded-none"
                     type="text"
                     name="name"
                     defaultValue={form.name}
@@ -180,14 +167,14 @@ const AddProduct = ({ setShowAddModal }) => {
                   <div>
                     <div className="space-y-6">
                       <textarea
-                        placeholder="Mô tả sản phẩm"
-                        className="border px-4 border-gray-300 rounded-2xl w-full focus:border-green-500 transition outline-none"
-                        type="textarea"
-                        defaultValue={form.description}
                         onChange={handleChange}
+                        placeholder="Description"
+                        className="border px-4 border-gray-300 rounded-2xl w-full "
+                        type="textarea"
                         name="description"
                         rows={3}
                         required
+                        defaultValue={form.description}
                       />
                     </div>
                   </div>
@@ -199,14 +186,15 @@ const AddProduct = ({ setShowAddModal }) => {
                           htmlFor="category"
                           className="mb-1 font-bold text-gray-700"
                         >
-                          Danh mục sản phẩm
+                          Category
                         </label>
+
                         <select
                           onChange={handleChange}
                           name="category"
                           id="category"
-                          defaultValue={form.category?._id ?? ""}
-                          className="max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500  transition w-full outline-none bg-white"
+                          value={form.category?._id ?? ""}
+                          className=" max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {categories &&
                             categories.map((category) => {
@@ -223,14 +211,15 @@ const AddProduct = ({ setShowAddModal }) => {
                           htmlFor="brand"
                           className="mb-1 font-bold text-gray-700 "
                         >
-                          Thương hiệu
+                          Brand
                         </label>
+
                         <select
+                          onChange={handleChange}
                           id="brand"
                           name="brand"
-                          className="max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500  transition w-full outline-none bg-white"
-                          onChange={handleChange}
-                          defaultValue={form.brand?._id ?? ""}
+                          value={form.brand?._id ?? ""}
+                          className="max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {brands &&
                             brands.map((brand) => {
@@ -253,17 +242,17 @@ const AddProduct = ({ setShowAddModal }) => {
                         className="mb-1 font-medium text-gray-700"
                         htmlFor="price-sell"
                       >
-                        Giá bán ({currency})
+                        Price sell ($)
                       </label>
                       <input
+                        onChange={handleChange}
+                        name="price"
                         id="price-sell"
-                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 transition w-full outline-none"
+                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none"
                         type="number"
                         required
-                        name="price"
-                        placeholder="1200"
+                        placeholder="$1243"
                         defaultValue={form.price}
-                        onChange={handleChange}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -271,16 +260,16 @@ const AddProduct = ({ setShowAddModal }) => {
                         className="mb-1 font-medium text-gray-700"
                         htmlFor="cost"
                       >
-                        Giá gốc ({currency})
+                        Cost ($)
                       </label>
                       <input
+                        onChange={handleChange}
                         id="cost"
                         name="cost"
-                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 transition w-full outline-none"
+                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none"
                         type="number"
                         required
-                        placeholder="1100"
-                        onChange={handleChange}
+                        placeholder="$1243"
                         defaultValue={form.cost}
                       />
                     </div>
@@ -289,16 +278,17 @@ const AddProduct = ({ setShowAddModal }) => {
                         className="mb-1 font-medium text-gray-700"
                         htmlFor="stock"
                       >
-                        Số lượng trong kho
+                        Stock
                       </label>
                       <input
+                        onChange={handleChange}
                         id="stock"
                         name="stock"
-                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 transition w-full outline-none"
+                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none"
                         type="number"
                         required
                         placeholder="100"
-                        onChange={handleChange}
+                        defaultValue={form.stock}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -306,40 +296,41 @@ const AddProduct = ({ setShowAddModal }) => {
                         className="mb-1 font-medium text-gray-700"
                         htmlFor="warranty"
                       >
-                        Thời gian bảo hành (tháng)
+                        Warranty Months
                       </label>
                       <input
+                        onChange={handleChange}
                         id="warranty"
-                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2  transition w-full outline-none"
-                        type="number"
                         name="warrantyMonths"
+                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none"
+                        type="number"
                         required
                         placeholder="13"
-                        onChange={handleChange}
+                        defaultValue={form.warrantyMonths}
                       />
                     </div>
                     <div className="flex items-center gap-2 col-span-1 md:col-span-2 mt-2">
                       <input
+                        onChange={handleChange}
                         id="bestseller"
+                        name="bestseller"
                         className="rounded max-w-50 border-gray-300 focus:ring-indigo-200 focus:ring-2"
                         type="checkbox"
-                        name="bestseller"
-                        onChange={handleChange}
+                        defaultValue={form.bestseller}
                       />
                       <label
                         htmlFor="bestseller"
                         className="font-medium text-gray-700 select-none"
                       >
-                        Sản phẩm bán chạy
+                        Bestseller
                       </label>
                     </div>
                   </div>
-                  {addProduct.isPending && <Spinner />}
                   <button
                     type="submit"
-                    className="mt-10 w-full items-center rounded-lg border focus:border-green-500 bg-gradient-to-r  px-8 py-3 text-base font-semibold text-white shadow-lg  hover:bg-green-700 bg-green-500 focus:ring-2  focus:ring-offset-2 focus:outline-none transition-all duration-150"
+                    className="mt-10 w-full items-center rounded-lg border border-indigo-600 bg-gradient-to-r from-indigo-500 to-indigo-700 px-8 py-3 text-base font-semibold text-white shadow-lg hover:from-indigo-600 hover:to-indigo-800 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none transition-all duration-150"
                   >
-                    Add to bag
+                    Save product
                   </button>
                 </div>
               </div>
@@ -351,4 +342,4 @@ const AddProduct = ({ setShowAddModal }) => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

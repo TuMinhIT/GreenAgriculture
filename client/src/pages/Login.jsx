@@ -20,7 +20,6 @@ const Login = () => {
       if (res.success) {
         setToken(res.data);
         navigate("/");
-        console.log("login success");
       } else {
         toast.error(res.message);
       }

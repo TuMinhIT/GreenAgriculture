@@ -1,8 +1,6 @@
-import React from "react";
-
 const Title = ({ text1, text2 }) => {
   return (
-    <div className="inline-flex gap-2 items-center text-3xl md:text-4xl mb-3">
+    <div className="inline-flex gap-2 items-center text-3xl md:text-4xl mb-10">
       <p className="text-green-500">
         {text1}
         <span className="text-green-700 font-medium"> {text2}</span>

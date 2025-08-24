@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+
 import { AppContext } from "../context/AppContext";
 export const categoriesService = () => {
   const { backendUrl } = useContext(AppContext);

@@ -3,9 +3,14 @@ const productService = require("../services/product.service");
 
 const createProduct = async (req, res, next) => {
   try {
+    console.log("hello");
     const newProduct = await productService.createProduct(req.body, req.files);
-    res.status(201).json(newProduct);
+    res.status(201).json({
+      success: true,
+      data: newProduct,
+    });
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };
@@ -46,8 +51,15 @@ const updateProduct = async (req, res, next) => {
 const deleteProduct = async (req, res, next) => {
   try {
     const deleted = await productService.deleteProduct(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Product not found" });
-    res.json({ message: "Product deleted successfully" });
+    if (!deleted)
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    res.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (err) {
     next(err);
   }

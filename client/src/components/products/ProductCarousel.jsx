@@ -11,10 +11,10 @@ const ProductCarousel = ({ item }) => {
       >
         {/* <!-- Carousel wrapper --> */}
         <div className="relative h-46 mx-5 rounded-lg overflow-hidden  md:h-50  ">
-          <div className=" ease-in-out " data-carousel-item>
+          <div className="ease-in-out " data-carousel-item>
             <img
-              src={item.image[currentIndex]}
-              className=" absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 hover:scale-105 "
+              src={item.images[currentIndex].url}
+              className=" absolute block  max-w-170 max-h-260 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 hover:scale-105 "
               alt="..."
             />
           </div>
@@ -28,7 +28,7 @@ const ProductCarousel = ({ item }) => {
           <img
             onClick={() =>
               setCurrentIndex(
-                currentIndex > 0 ? currentIndex - 1 : item.image.length - 1
+                currentIndex > 0 ? currentIndex - 1 : item.images.length - 1
               )
             }
             className="hover:scale-150 hover:border rounded-3xl text-gray-500"
@@ -45,7 +45,7 @@ const ProductCarousel = ({ item }) => {
             <img
               onClick={() =>
                 setCurrentIndex(
-                  currentIndex < item.image.length - 1 ? currentIndex + 1 : 0
+                  currentIndex < item.images.length - 1 ? currentIndex + 1 : 0
                 )
               }
               className="hover:scale-150 hover:border rounded-3xl text-gray-500"

@@ -19,7 +19,6 @@ const generateResetToken = (user) => {
     expiresIn: "15m",
   });
 };
-
 //service for customer
 
 const register = async ({ name, email, password }) => {

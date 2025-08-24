@@ -12,7 +12,7 @@ const DashboardLayout = () => {
     setSidebarOpen(!sidebarOpen);
   };
   return (
-    <div className="min-h-screen bg-green-200">
+    <div className="min-h-screen bg-white">
       <div className="">
         {<Header currentPage={currentPage} toggleSidebar={toggleSidebar} />}
       </div>
@@ -21,7 +21,7 @@ const DashboardLayout = () => {
       <div className="flex flex-col">
         <div className="flex">
           {/* desktop */}
-          <div className="hidden lg:block w-64 bg-green-300 shadow-lg border-r border-gray-500 ">
+          <div className="hidden lg:block w-64 bg-green-400 shadow-lg border-r border-gray-500 ">
             <Sidebar mobi={false} />
           </div>
 
@@ -34,7 +34,7 @@ const DashboardLayout = () => {
             </div>
           )}
           <div className="flex flex-col w-full bg-gray-100">
-            <div className="flex flex-col my-5 mx-5 md:mx-10 lg:mx-20">
+            <div className="flex flex-col my-10 mx-5 md:mx-15 lg:mx-15">
               <Routers />
             </div>
           </div>

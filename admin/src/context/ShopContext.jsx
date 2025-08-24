@@ -4,7 +4,7 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-
+  const currency = "đ";
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const ShopContextProvider = ({ children }) => {
     setToken,
     backendUrl,
     logOut,
+    currency,
   };
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
