@@ -11,20 +11,11 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
     queryFn: getAllCategories,
   });
 
-  const [expandedCategories, setExpandedCategories] = useState(new Set());
-
-  const toggleCategory = (categoryId) => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
-    } else {
-      newExpanded.add(categoryId);
-    }
-    setExpandedCategories(newExpanded);
-  };
-
   const handleCategoryClick = (categoryId) => {
     onCategorySelect(categoryId);
+    if (isOpen) {
+      setIsOpen(false);
+    }
   };
 
   return (
@@ -98,6 +89,26 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
         {categories && (
           <div className="p-4">
             <ul className="space-y-2">
+              <li key={"all"}>
+                <div
+                  className={`
+                    flex items-center justify-between p-3 rounded-lg cursor-pointer
+                    transition-colors duration-200 group
+                    ${
+                      selectedCategory === "all"
+                        ? "bg-green-100 text-green-800 border border-green-200"
+                        : "hover:bg-gray-50 text-gray-700"
+                    }
+                  `}
+                  onClick={() => handleCategoryClick("all")}
+                >
+                  <div className="flex items-center space-x-3 flex-1">
+                    <div className="flex-1">
+                      <span className="font-medium">Tất cả sản phẩm</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
               {categories.map((category) => (
                 <li key={category._id}>
                   <div
@@ -105,79 +116,19 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
                     flex items-center justify-between p-3 rounded-lg cursor-pointer
                     transition-colors duration-200 group
                     ${
-                      selectedCategory === category._id
+                      selectedCategory === category.name
                         ? "bg-green-100 text-green-800 border border-green-200"
                         : "hover:bg-gray-50 text-gray-700"
                     }
                   `}
-                    onClick={() => handleCategoryClick(category._id)}
+                    onClick={() => handleCategoryClick(category.name)}
                   >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="flex-1">
                         <span className="font-medium">{category.name}</span>
                       </div>
                     </div>
-
-                    {category.subcategories && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleCategory(category.id);
-                        }}
-                        className="p-1 hover:bg-gray-200 rounded"
-                      >
-                        <svg
-                          className={`w-4 h-4 transition-transform duration-200 ${
-                            expandedCategories.has(category.id)
-                              ? "rotate-180"
-                              : ""
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </button>
-                    )}
                   </div>
-
-                  {/* Subcategories */}
-                  {category.subcategories &&
-                    expandedCategories.has(category.id) && (
-                      <ul className="ml-6 mt-2 space-y-1">
-                        {category.subcategories.map((subcategory) => (
-                          <li key={subcategory.id}>
-                            <div
-                              className={`
-                            flex items-center justify-between p-2 rounded-md cursor-pointer
-                            transition-colors duration-200
-                            ${
-                              selectedCategory === subcategory.id
-                                ? "bg-green-50 text-green-700 border-l-2 border-green-500"
-                                : "hover:bg-gray-50 text-gray-600"
-                            }
-                          `}
-                              onClick={() =>
-                                handleCategoryClick(subcategory.id)
-                              }
-                            >
-                              <span className="text-sm">
-                                {subcategory.name}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                ({subcategory.count})
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
                 </li>
               ))}
             </ul>

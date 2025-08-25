@@ -1,10 +1,33 @@
-const SearchBar = () => {
+import { useEffect, useState } from "react";
+
+const SearchBar = ({ setFilteredProducts, products }) => {
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState([]);
+
+  useEffect(() => {
+    if (!search || search === "") {
+      setFilteredProducts(products);
+      return;
+    }
+
+    const filtered = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.barcode.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredProducts(filtered);
+  }, [search]);
+
   return (
     <div>
       {/* Mobile Search Bar */}
       <div className="  pb-4">
         <div className="relative">
           <input
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
             type="text"
             placeholder="Tìm kiếm sản phẩm..."
             className="w-full pl-4 pr-12 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"

@@ -12,6 +12,9 @@ const ProductCarousel = ({ item }) => {
         {/* <!-- Carousel wrapper --> */}
         <div className="relative h-46 mx-5 rounded-lg overflow-hidden  md:h-50  ">
           <div className="ease-in-out " data-carousel-item>
+            <div className="z-10 absolute text-sm text-gray-500">
+              {item.barcode}
+            </div>
             <img
               src={item.images[currentIndex].url}
               className=" absolute block  max-w-170 max-h-260 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 hover:scale-105 "

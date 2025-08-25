@@ -1,5 +1,3 @@
-import React from "react";
-
 const ProductNotFound = ({ handleCategorySelect }) => {
   return (
     <div className="text-center py-16">
