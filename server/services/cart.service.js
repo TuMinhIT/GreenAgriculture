@@ -1,5 +1,6 @@
 // server/services/cart.service.js
 const Cart = require("../models/carts.model");
+const Product = require("../models/products.model");
 
 exports.getCartByUserId = async (userId) => {
   const cartData = await Cart.findById(userId).populate({
@@ -9,18 +10,37 @@ exports.getCartByUserId = async (userId) => {
   return cartData;
 };
 
-exports.updateCart = async (userId, cartData) => {
-  return await Cart.findByIdAndUpdate(userId, cartData, {
-    new: true,
-    upsert: true,
+exports.updateCart = async (userId, productId, quantity) => {
+  const cart = await Cart.findOne({ _id: userId });
+  if (!cart) {
+    // Nếu giỏ hàng chưa tồn tại, tạo mới
+    const newCart = new Cart({
+      _id: userId,
+      products: [{ product: productId, quantity }],
+    });
+
+    return await newCart.save();
+  }
+
+  // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+  const itemIndex = cart.products.findIndex((item) => {
+    return item._id.toString() === productId.toString();
   });
+
+  if (itemIndex > -1) {
+    // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+    cart.products[itemIndex].quantity = quantity;
+    return await cart.save();
+  } else {
+    // Nếu sản phẩm chưa tồn tại, thêm mới
+    cart.products.push({ product: productId, quantity });
+  }
+  return await cart.save();
 };
 
 exports.clearCart = async (userId) => {
   return await Cart.findByIdAndUpdate(userId, { products: [] }, { new: true });
 };
-
-const Product = require("../models/products.model");
 
 exports.addToCart = async (userId, productId, quantity) => {
   try {

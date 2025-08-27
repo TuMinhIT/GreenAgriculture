@@ -13,10 +13,11 @@ const { authUser } = require("../middleware/auth");
 router.get("/", authUser, cartController.getCart);
 
 router.put(
-  "/:userId",
-  // verifyToken,
-  validateBody(updateCartSchema),
-  cartController.updateCart
+  "/:productId",
+
+  authUser,
+  // validateBody(updateCartSchema),
+  cartController.updateCartItem
 );
 router.delete(
   "/all/:userId",

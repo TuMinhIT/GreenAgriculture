@@ -7,12 +7,12 @@ import { useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cartService } from "../services/cartService";
 import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
 
 const Cart = () => {
-  const { cartItems, currency, updateQuatity, getCartAmount, cartCount } =
-    useContext(AppContext);
+  const { cartItems, currency, setCartItems } = useContext(AppContext);
 
-  const { getCartData, deteteCartItem } = cartService();
+  const { getCartData, deteteCartItem, updateQuantity } = cartService();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -32,6 +32,32 @@ const Cart = () => {
       toast.error("Xoá sản phẩm thất bại!");
     },
   });
+
+  const { mutate: mutateQuantity } = useMutation({
+    mutationFn: updateQuantity,
+    onSuccess: (res) => {
+      if (res) {
+        queryClient.invalidateQueries({ queryKey: ["carts"] });
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("update quantity faile!");
+    },
+  });
+
+  const handleQuantityChange = (productId, quantity) => {
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item._id === productId
+          ? {
+              ...item,
+              quantity: quantity,
+            }
+          : item
+      )
+    );
+  };
 
   return (
     <>
@@ -74,15 +100,19 @@ const Cart = () => {
                         <div className="absolute right-[50%] bottom-0">
                           <div className="flex items-center border-gray-100">
                             <span
-                              // onClick={() => {
-                              //   if (item.quantity > 1) {
-                              //     updateQuatity(
-                              //       item._id,
-                              //       item.size,
-                              //       item.quantity - 1
-                              //     );
-                              //   }
-                              // }}
+                              onClick={() => {
+                                if (item.quantity > 1) {
+                                  mutateQuantity({
+                                    productId: item._id,
+                                    quantity: item.quantity - 1,
+                                  });
+
+                                  handleQuantityChange(
+                                    item._id,
+                                    item.quantity - 1
+                                  );
+                                }
+                              }}
                               className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
                             >
                               {" "}
@@ -97,11 +127,16 @@ const Cart = () => {
                             />
                             <span
                               onClick={() => {
-                                // updateQuatity(
-                                //   item._id,
-                                //   item.size,
-                                //   item.quantity + 1
-                                // );
+                                if (item.quantity < item.product.stock) {
+                                  mutateQuantity({
+                                    productId: item._id,
+                                    quantity: item.quantity + 1,
+                                  });
+                                  handleQuantityChange(
+                                    item._id,
+                                    item.quantity + 1
+                                  );
+                                }
                               }}
                               className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
                             >
@@ -125,10 +160,6 @@ const Cart = () => {
                           >
                             <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
                           </svg>
-
-                          {/* {() => {
-                            updateQuatity(item._id, item.size, 0);
-                          }} */}
                         </div>
                       </div>
                     </div>

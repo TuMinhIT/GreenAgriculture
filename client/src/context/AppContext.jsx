@@ -13,89 +13,25 @@ export const AppProvider = ({ children }) => {
   const delivery_fee = 1000;
 
   const [cartItems, setCartItems] = useState([]);
-  const [cartCount, setCartCount] = useState(2);
-  // const updateQuatity = async (itemId, size, quantity) => {
-  //   let cartData = structuredClone(cartItems);
-  //   cartData[itemId][size] = quantity;
-  //   if (token) {
-  //     try {
-  //       const res = await axios.post(
-  //         backendUrl + "/api/cart/update",
-  //         {
-  //           productId: itemId,
-  //           size,
-  //           quantity,
-  //         },
-  //         {
-  //           headers: {
-  //             token,
-  //           },
-  //         }
-  //       );
-  //       if (res.data.success) {
-  //         setCartItems(cartData);
-  //       } else {
-  //         toast.error(res.data.message);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //       toast.error(error.message);
-  //     }
-  //   }
-  // };
+  const [cartCount, setCartCount] = useState(0);
+  const [amount, setAmount] = useState(0);
 
-  // const getCartCount = () => {
-  //   let count = 0;
-  //   for (let item in cartItems) {
-  //     for (let size in cartItems[item]) {
-  //       try {
-  //         if (cartItems[item][size] > 0) count += cartItems[item][size];
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //   }
-  //   return count;
-  // };
+  useEffect(() => {
+    if (cartItems && cartItems.length > 0) {
+      const totalCount = cartItems.reduce(
+        (count, item) => count + item.quantity,
+        0
+      );
 
-  // const getCartData = async (token) => {
-  //   try {
-  //     const res = await axios.post(
-  //       backendUrl + "/api/cart/get",
-  //       {},
-  //       {
-  //         headers: {
-  //           token,
-  //         },
-  //       }
-  //     );
-  //     if (res.data.success) {
-  //       setCartItems(res.data.cartData);
-  //     } else {
-  //       toast.error(res.data.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.message);
-  //   }
-  // };
+      let cartAmount = 0;
+      for (const item of cartItems) {
+        cartAmount += item.product.price * item.quantity;
+      }
 
-  const getCartAmount = () => {
-    let amount = 0;
-    // for (let item in cartItems) {
-    //   for (let size in cartItems[item]) {
-    //     try {
-    //       if (cartItems[item][size] > 0) {
-    //         const product = products.find((product) => product._id === item);
-    //         amount += product.price * cartItems[item][size];
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   }
-    // }
-    return amount;
-  };
+      setCartCount(totalCount);
+      setAmount(cartAmount);
+    }
+  }, [cartItems]);
 
   useEffect(() => {
     if (token === "") {
@@ -108,16 +44,16 @@ export const AppProvider = ({ children }) => {
     currency,
     delivery_fee,
 
-    getCartAmount,
     cartCount,
     setCartCount,
+    amount,
+    cartItems,
+    setCartItems,
 
     token,
     setToken,
     backendUrl,
     navigate,
-    cartItems,
-    setCartItems,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

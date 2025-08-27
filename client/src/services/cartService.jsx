@@ -77,35 +77,33 @@ export const cartService = () => {
     }
   };
 
-  // const updateQuatity = async (itemId, size, quantity) => {
-  //   let cartData = structuredClone(cartItems);
-  //   cartData[itemId][size] = quantity;
-  //   if (token) {
-  //     try {
-  //       const res = await axios.post(
-  //         backendUrl + "/api/cart/update",
-  //         {
-  //           productId: itemId,
-  //           size,
-  //           quantity,
-  //         },
-  //         {
-  //           headers: {
-  //             token,
-  //           },
-  //         }
-  //       );
-  //       if (res.data.success) {
-  //         setCartItems(cartData);
-  //       } else {
-  //         toast.error(res.data.message);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //       toast.error(error.message);
-  //     }
-  //   }
-  // };
+  const updateQuantity = async ({ productId, quantity }) => {
+    if (token) {
+      try {
+        const res = await axios.put(
+          backendUrl + resource + productId,
+          {
+            quantity,
+          },
+          {
+            headers: {
+              token,
+            },
+          }
+        );
+        if (res.data.success) {
+          //  to do sothing
+          // const cartData = res.data.data;
+          // setCartItems(cartData.products);
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
+  };
 
   // const getCartCount = () => {
   //   let count = 0;
@@ -138,5 +136,5 @@ export const cartService = () => {
   //   return amount;
   // };
 
-  return { addToCart, getCartData, deteteCartItem };
+  return { addToCart, getCartData, deteteCartItem, updateQuantity };
 };

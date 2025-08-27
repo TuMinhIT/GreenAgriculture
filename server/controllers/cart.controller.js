@@ -21,17 +21,33 @@ exports.getCart = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-// Cập nhật giỏ hàng
-// Chỉ cập nhật sản phẩm, không xóa sản phẩm cũ, ví dụ: thêm số lượng,...
-exports.updateCart = async (req, res) => {
+// Cập nhật số lượng giỏ hàng
+exports.updateCartItem = async (req, res) => {
   try {
+    const productId = req.params.productId;
+    const userId = req.user;
+    const { quantity } = req.body;
+    if (quantity <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity must be greater than 0",
+      });
+    }
     const updatedCart = await cartService.updateCart(
-      req.params.userId,
-      req.body
+      userId,
+      productId,
+      quantity
     );
-    res.json(updatedCart);
+    res.json({
+      success: true,
+      data: updatedCart,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
