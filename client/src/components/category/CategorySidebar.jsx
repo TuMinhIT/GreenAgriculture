@@ -52,7 +52,7 @@ const CategorySidebar = ({ onCategorySelect, selectedCategory }) => {
       <aside
         className={`  
           fixed lg:sticky top-0 left-0 h-screen z-50 
-          w-full bg-white shadow-lg border-r border-gray-200
+          w-full max-w-100 bg-white shadow-lg border-r border-gray-200
           transform transition-transform duration-300 ease-in-out 
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           overflow-y-auto

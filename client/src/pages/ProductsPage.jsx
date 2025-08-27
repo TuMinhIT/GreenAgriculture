@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import CategorySidebar from "../components/category/CategorySidebar";
-import Title from "../components/Title";
+
 import ProductCard from "../components/products/ProductCard";
 import Pagination from "../components/products/Pagination";
 import ProductNotFound from "../components/products/ProductNotFound";

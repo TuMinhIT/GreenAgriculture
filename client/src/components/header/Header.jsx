@@ -6,14 +6,12 @@ import { AppContext } from "../../context/AppContext";
 
 const Header = () => {
   const [visible, setVisible] = useState(false);
-  const [cartCount, setCartCount] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuRef = useRef();
 
-  const { token, setToken, getCartCount, navigate } = useContext(AppContext);
+  const { token, setToken, cartCount, navigate } = useContext(AppContext);
 
-  // Đóng dropdown khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -23,17 +21,6 @@ const Header = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    if (typeof getCartCount === "function") {
-      try {
-        const count = getCartCount();
-        setCartCount(count ?? 0);
-      } catch (err) {
-        console.warn("getCartCount error:", err);
-      }
-    }
-  }, [token]);
 
   return (
     <>

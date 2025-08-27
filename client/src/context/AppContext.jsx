@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 
 // Tạo context
@@ -12,12 +11,90 @@ export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const currency = "đ";
   const delivery_fee = 1000;
-  const getCartCount = () => {
-    return 5;
-  };
-  const updateQuatity = null;
+
+  const [cartItems, setCartItems] = useState([]);
+  const [cartCount, setCartCount] = useState(2);
+  // const updateQuatity = async (itemId, size, quantity) => {
+  //   let cartData = structuredClone(cartItems);
+  //   cartData[itemId][size] = quantity;
+  //   if (token) {
+  //     try {
+  //       const res = await axios.post(
+  //         backendUrl + "/api/cart/update",
+  //         {
+  //           productId: itemId,
+  //           size,
+  //           quantity,
+  //         },
+  //         {
+  //           headers: {
+  //             token,
+  //           },
+  //         }
+  //       );
+  //       if (res.data.success) {
+  //         setCartItems(cartData);
+  //       } else {
+  //         toast.error(res.data.message);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //       toast.error(error.message);
+  //     }
+  //   }
+  // };
+
+  // const getCartCount = () => {
+  //   let count = 0;
+  //   for (let item in cartItems) {
+  //     for (let size in cartItems[item]) {
+  //       try {
+  //         if (cartItems[item][size] > 0) count += cartItems[item][size];
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     }
+  //   }
+  //   return count;
+  // };
+
+  // const getCartData = async (token) => {
+  //   try {
+  //     const res = await axios.post(
+  //       backendUrl + "/api/cart/get",
+  //       {},
+  //       {
+  //         headers: {
+  //           token,
+  //         },
+  //       }
+  //     );
+  //     if (res.data.success) {
+  //       setCartItems(res.data.cartData);
+  //     } else {
+  //       toast.error(res.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.message);
+  //   }
+  // };
+
   const getCartAmount = () => {
-    return 2;
+    let amount = 0;
+    // for (let item in cartItems) {
+    //   for (let size in cartItems[item]) {
+    //     try {
+    //       if (cartItems[item][size] > 0) {
+    //         const product = products.find((product) => product._id === item);
+    //         amount += product.price * cartItems[item][size];
+    //       }
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    // }
+    return amount;
   };
 
   useEffect(() => {
@@ -30,14 +107,17 @@ export const AppProvider = ({ children }) => {
   const value = {
     currency,
     delivery_fee,
-    getCartCount,
-    updateQuatity,
+
     getCartAmount,
-    products,
+    cartCount,
+    setCartCount,
+
     token,
     setToken,
     backendUrl,
     navigate,
+    cartItems,
+    setCartItems,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

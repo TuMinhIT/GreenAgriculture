@@ -1,20 +1,11 @@
 // models/carts.model.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const cartItemSchema = new mongoose.Schema({
-  productId: {
+  product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: "Product",
     required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0,
   },
   quantity: {
     type: Number,
@@ -27,7 +18,7 @@ const cartSchema = new mongoose.Schema(
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // ID trùng với userId → mỗi user 1 giỏ hàng
+      ref: "User", // ID trùng với userId → mỗi user 1 giỏ hàng
     },
     products: {
       type: [cartItemSchema],
@@ -37,6 +28,6 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Cart = mongoose.model('Cart', cartSchema);
+const Cart = mongoose.model("Cart", cartSchema);
 
 module.exports = Cart;

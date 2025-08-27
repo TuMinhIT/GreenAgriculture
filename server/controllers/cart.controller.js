@@ -4,13 +4,23 @@ const cartService = require("../services/cart.service");
 // Lấy giỏ hàng của người dùng
 exports.getCart = async (req, res) => {
   try {
-    const cart = await cartService.getCartByUserId(req.params.userId);
-    res.json(cart || { _id: req.params.userId, products: [] });
+    const userId = req.user._id;
+    const cart = await cartService.getCartByUserId(userId);
+    if (!cart) {
+      return res.send({
+        success: true,
+        data: { _id: userId, products: [] },
+      });
+    }
+    return res.send({
+      success: true,
+      data: cart || { _id: userId, products: [] },
+    });
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 };
-
 // Cập nhật giỏ hàng
 // Chỉ cập nhật sản phẩm, không xóa sản phẩm cũ, ví dụ: thêm số lượng,...
 exports.updateCart = async (req, res) => {
@@ -40,14 +50,17 @@ exports.addToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
     const userId = req.user._id;
-
     const updatedCart = await cartService.addToCart(
       userId,
       productId,
       quantity
     );
-    res.status(200).json(updatedCart);
+    res.status(200).json({
+      success: true,
+      data: updatedCart,
+    });
   } catch (err) {
+    console.log(err.message);
     res.status(400).json({ error: err.message });
   }
 };
@@ -56,11 +69,17 @@ exports.addToCart = async (req, res) => {
 exports.removeFromCart = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const userId = req.user._id;
-
+    const userId = req.user;
     const updatedCart = await cartService.removeFromCart(userId, productId);
-    res.status(200).json(updatedCart);
+    res.status(200).json({
+      success: true,
+      data: updatedCart,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.log(err.message);
+    res.status(400).json({
+      success: false,
+      error: err.message,
+    });
   }
 };

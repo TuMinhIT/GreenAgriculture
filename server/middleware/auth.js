@@ -46,17 +46,22 @@ exports.authAdmin = async (req, res, next) => {
 
 exports.authUser = async (req, res, next) => {
   const token = req.headers.token; // Format: "token: token...."
-  if (!token)
+
+  if (!token) {
+    console.log("Unauthorized");
     return res.send({
       success: false,
       message: "Unauthorized!",
     });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     if (decoded.email) {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: decoded.email });
       if (user) {
+        req.user = user._id;
         next();
       } else
         return res.send({
@@ -65,6 +70,7 @@ exports.authUser = async (req, res, next) => {
         });
     }
   } catch (error) {
+    console.log("auth" + error.message);
     return res.send({
       success: false,
       message: "Invalid or expired token.",
