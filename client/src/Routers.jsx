@@ -11,6 +11,8 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
+import PlaceOrder from "./pages/PlaceOrder";
+import Order from "./pages/Orders";
 const Routers = () => {
   const { token } = useContext(AppContext);
   return (
@@ -36,6 +38,8 @@ const Routers = () => {
           <>
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/place-order" element={<PlaceOrder />} />
+            <Route path="/orders" element={<Order />} />
           </>
         )}
       </Routes>

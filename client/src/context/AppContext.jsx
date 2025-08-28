@@ -31,7 +31,7 @@ export const AppProvider = ({ children }) => {
       setCartCount(totalCount);
       setAmount(cartAmount);
     }
-  }, [cartItems]);
+  }, [cartItems, cartCount, amount]);
 
   useEffect(() => {
     if (token === "") {

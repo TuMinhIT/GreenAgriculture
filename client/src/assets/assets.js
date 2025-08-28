@@ -15,6 +15,9 @@ import img3 from "./img3.jpg";
 import add_icon from "./add_icon.png";
 import chevron_left from "./chevron_left.png";
 import chevron_right from "./chevron_right.png";
+import razorpay_logo from "./razorpay_logo.png";
+import stripe_logo from "./stripe_logo.png";
+import cod_logo from "./cod-logo.webp";
 export const assets = {
   logo,
   loginBg,
@@ -33,156 +36,12 @@ export const assets = {
   add_icon,
   chevron_left,
   chevron_right,
+  stripe_logo,
+  razorpay_logo,
+  cod_logo,
 };
 
 import carousel1 from "./carouselBg/carousel1.jpg";
 import carousel2 from "./carouselBg/carousel2.jpg";
 import carousel3 from "./carouselBg/carousel3.jpg";
 export const carousel = [carousel1, carousel2, carousel3];
-
-import p1 from "./products/p1.jpg";
-import p2 from "./products/p2.jpg";
-import p3 from "./products/p3.jpg";
-import p4 from "./products/p4.jpg";
-
-export const products = [
-  {
-    id: 1,
-    name: "Thuốc diệt chuột",
-    barcode: "DLXPS13",
-    category: "Laptop",
-    creationDate: "2024-01-15",
-    retailPrice: 1500,
-    importPrice: 1200,
-    image: [p1, p2, p3, p4],
-  },
-  {
-    id: 2,
-    name: "Thuốc trị bệnh",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p2, p1, p3, p4],
-  },
-  {
-    id: 3,
-    name: "Thuốc ABD",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p3, p2, p1, p4],
-  },
-  {
-    id: 4,
-    name: "Phan bón lá",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p4, p2, p3, p1],
-  },
-  {
-    id: 5,
-    name: "Thuốc trị bệnh",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p2, p1, p3, p4],
-  },
-  {
-    id: 6,
-    name: "Thuốc ABD",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p3, p2, p1, p4],
-  },
-  {
-    id: 7,
-    name: "Phan bón lá",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p4, p2, p3, p1],
-  },
-  {
-    id: 8,
-    name: "Thuốc ABD",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p3, p2, p1, p4],
-  },
-  {
-    id: 9,
-    name: "Phan bón lá",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p4, p2, p3, p1],
-  },
-  {
-    id: 10,
-    name: "Thuốc ABD",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p3, p2, p1, p4],
-  },
-  {
-    id: 11,
-    name: "Phan bón lá",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p4, p2, p3, p1],
-  },
-  {
-    id: 14,
-    name: "Thuốc ABD",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p3, p2, p1, p4],
-  },
-  {
-    id: 15,
-    name: "Phan bón lá",
-    barcode: "HGHB HGIY",
-    category: "Screen",
-    creationDate: "2024-01-15",
-    retailPrice: 12300,
-    importPrice: 15600,
-    image: [p4, p2, p3, p1],
-  },
-];
-
-const users = [
-  {
-    id: 1,
-    name: "User 1",
-    email: "user1@example.com",
-    password: "password1",
-  },
-];

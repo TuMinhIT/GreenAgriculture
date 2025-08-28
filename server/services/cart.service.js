@@ -5,7 +5,6 @@ const Product = require("../models/products.model");
 exports.getCartByUserId = async (userId) => {
   const cartData = await Cart.findById(userId).populate({
     path: "products.product",
-    select: "-cost",
   });
   return cartData;
 };

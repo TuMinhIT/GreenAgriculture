@@ -1,5 +1,5 @@
 import Title from "./Title";
-import { products } from "../assets/assets";
+
 import ProductCard from "./products/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { ProductsService } from "../services/productsService";

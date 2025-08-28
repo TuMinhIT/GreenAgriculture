@@ -5,7 +5,7 @@ import { AppContext } from "../../context/AppContext";
 
 const CartTotal = () => {
   const location = useLocation();
-  const { amount, currency, delivery_fee } = useContext(AppContext);
+  const { amount, currency, delivery_fee, navigate } = useContext(AppContext);
   return (
     <div className="mt-6 h-full  rounded-lg border bg-white p-6 shadow-md md:mt-0 max-w-1/3 w-full min-w-[300px] right-0">
       <div className="mb-2 flex justify-between">

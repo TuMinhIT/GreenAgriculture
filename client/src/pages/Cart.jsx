@@ -1,9 +1,8 @@
-import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import CartTotal from "../components/cartComponent/CartTotal";
 import { Link } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cartService } from "../services/cartService";
 import Spinner from "../components/Spinner";
