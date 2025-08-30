@@ -68,12 +68,13 @@ const loginAdmin = async (req, res, next) => {
 const changePassword = async (req, res, next) => {
   try {
     const result = await userService.changePassword(
-      req.user.id,
-      req.body.oldPassword,
+      req.user,
+      req.body.currentPassword,
       req.body.newPassword
     );
-    res.json({ message: "Đổi mật khẩu thành công", user: result });
+    res.send(result);
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };
@@ -101,7 +102,9 @@ const resetPassword = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const updated = await userService.updateProfile(req.user.id, req.body);
+    const userId = req.user;
+    const { user } = req.body;
+    const updated = await userService.updateProfile(userId, user);
     if (!updated)
       return res
         .status(404)
@@ -114,9 +117,14 @@ const updateProfile = async (req, res, next) => {
 
 const getMyProfile = async (req, res, next) => {
   try {
-    const result = await userService.getMyProfile(req.user.id);
-    res.json(result);
+    const userId = req.user;
+    const result = await userService.getMyProfile(userId);
+    res.json({
+      success: true,
+      data: result,
+    });
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };

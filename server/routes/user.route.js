@@ -2,7 +2,7 @@
 const router = require("express").Router();
 const userController = require("../controllers/user.controller");
 const { validateBody } = require("../middleware/validateObjectId");
-const { verifyToken, checkRole } = require("../middleware/auth");
+const { verifyToken, checkRole, authUser } = require("../middleware/auth");
 const { upload } = require("../utils/upload");
 
 const {
@@ -22,6 +22,7 @@ router.post("/verify-otp", userController.verifyOTP);
 
 router.post("/login", validateBody(loginSchema), userController.login);
 
+//admin login
 router.post(
   "/loginAdmin",
   validateBody(loginSchema),
@@ -39,19 +40,22 @@ router.post(
   userController.resetPassword
 );
 
-// Protected routes
-router.get("/me", verifyToken, userController.getMyProfile);
-router.put(
-  "/me",
-  verifyToken,
-  validateBody(updateProfileSchema),
-  userController.updateProfile
-);
-router.put(
-  "/change-password",
-  verifyToken,
-  validateBody(changePasswordSchema),
+router.post(
+  "/profile/change-password",
+  authUser,
+  // validateBody(changePasswordSchema),
   userController.changePassword
+);
+
+// user get they info
+router.get("/profile", authUser, userController.getMyProfile);
+
+// update profile user
+router.put(
+  "/profile",
+  authUser,
+  // validateBody(updateProfileSchema),
+  userController.updateProfile
 );
 
 // Admin routes

@@ -46,7 +46,6 @@ exports.authAdmin = async (req, res, next) => {
 
 exports.authUser = async (req, res, next) => {
   const token = req.headers.token; // Format: "token: token...."
-
   if (!token) {
     console.log("Unauthorized");
     return res.send({

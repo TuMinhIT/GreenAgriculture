@@ -58,10 +58,19 @@ const changePassword = async (userId, oldPassword, newPassword) => {
   const user = await User.findById(userId).select("+password");
   if (!user) throw new Error("Người dùng không tồn tại");
   const isMatch = await user.comparePassword(oldPassword);
-  if (!isMatch) throw new Error("Mật khẩu cũ không đúng");
+  if (!isMatch) {
+    return {
+      success: false,
+      message: "Mật khẩu cũ không đúng",
+    };
+  }
+
   user.password = newPassword;
   await user.save();
-  return user;
+  return {
+    success: true,
+    data: user,
+  };
 };
 
 const forgotPassword = async (email) => {
@@ -95,29 +104,23 @@ const resetPassword = async (token, newPassword) => {
 };
 
 const updateProfile = async (userId, data) => {
-  const allowed = ["name", "phone", "address"];
-  const updates = {};
-  allowed.forEach((key) => {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
-      updates[key] = data[key];
-    }
-  });
+  const updates = {
+    name: data.name,
+    address: data.address,
+    phone: data.phone,
+  };
 
-  console.log(">>> updates to apply:", updates);
-
-  if (Object.keys(updates).length === 0) {
-    return await User.findById(userId);
-  }
-  const user = await User.findByIdAndUpdate(
+  const updateUser = await User.findByIdAndUpdate(
     userId,
     { $set: updates },
     { new: true }
   );
-  return user;
+
+  return updateUser;
 };
 
 const getMyProfile = async (userId) => {
-  return await User.findById(userId);
+  return await User.findById(userId, "-password");
 };
 
 const sendOTP = async (email) => {

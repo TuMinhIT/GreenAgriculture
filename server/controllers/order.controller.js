@@ -28,7 +28,7 @@ const getAllUserOrders = async (req, res, next) => {
     const result = await orderService.getAllByUser(userId);
     res.json({
       success: true,
-      data: result,
+      data: result.reverse(),
     });
   } catch (err) {
     console.log(err.message);

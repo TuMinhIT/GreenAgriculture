@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 
 export const userService = () => {
-  const { backendUrl, setToken } = useContext(AppContext);
+  const { backendUrl, setToken, token } = useContext(AppContext);
   const resource = "/api/users/";
   const LoginUser = async ({ email, password }) => {
     try {
@@ -57,20 +57,89 @@ export const userService = () => {
       alert(err.message);
     }
   };
-  const UpdateUser = (patch) => {
-    setUser((prev) => {
-      const next =
-        typeof patch === "function"
-          ? patch(prev || {})
-          : { ...(prev || {}), ...patch };
-      try {
-        localStorage.setItem("user", JSON.stringify(next));
-      } catch (err) {
-        // ignore storage errors
+
+  const GetUserInfo = async () => {
+    try {
+      const res = await axios.get(
+        backendUrl + resource + "profile",
+
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data.data;
+      } else {
+        toast.error(res.data.message);
       }
-      return next;
-    });
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
   };
-  const DeleteUser = async (data) => {};
-  return { LoginUser, Register, UpdateUser, DeleteUser, SendOTP, VerifyOTP };
+
+  const UpdateUser = async ({ userInfo }) => {
+    try {
+      const res = await axios.put(
+        backendUrl + resource + "profile",
+        {
+          user: userInfo,
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data.data;
+      } else {
+        console.log(res.data);
+        toast.error(res.data.message);
+      }
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+
+  const ChangePassword = async ({ currentPassword, newPassword }) => {
+    try {
+      const res = await axios.post(
+        backendUrl + resource + "profile/change-password",
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data;
+      } else {
+        console.log(res.data);
+        toast.error(res.data.message);
+      }
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+  return {
+    LoginUser,
+    Register,
+    UpdateUser,
+    SendOTP,
+    VerifyOTP,
+    GetUserInfo,
+    ChangePassword,
+  };
 };
