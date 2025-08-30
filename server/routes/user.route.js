@@ -2,7 +2,12 @@
 const router = require("express").Router();
 const userController = require("../controllers/user.controller");
 const { validateBody } = require("../middleware/validateObjectId");
-const { verifyToken, checkRole, authUser } = require("../middleware/auth");
+const {
+  verifyToken,
+  checkRole,
+  authUser,
+  authAdmin,
+} = require("../middleware/auth");
 const { upload } = require("../utils/upload");
 
 const {
@@ -19,7 +24,7 @@ router.post("/register", validateBody(registerSchema), userController.register);
 router.post("/send-otp", userController.sendOTP);
 // Xác minh OTP
 router.post("/verify-otp", userController.verifyOTP);
-
+//user login
 router.post("/login", validateBody(loginSchema), userController.login);
 
 //admin login
@@ -34,6 +39,7 @@ router.post(
   validateBody(forgotPasswordSchema),
   userController.forgotPassword
 );
+
 router.post(
   "/reset-password",
   validateBody(resetPasswordSchema),
@@ -59,11 +65,12 @@ router.put(
 );
 
 // Admin routes
-router.use(verifyToken, checkRole("admin"));
+//get all users
+router.get("/", authAdmin, userController.getAllUsers);
+router.delete("/:id", authAdmin, userController.deleteUser);
 
-router.get("/", checkRole("admin"), userController.getAllUsers);
+//no use
 router.get("/:id", checkRole("admin"), userController.getUserById);
-router.delete("/:id", checkRole("admin"), userController.deleteUser);
 router.put(
   "/:id",
   checkRole("admin"),

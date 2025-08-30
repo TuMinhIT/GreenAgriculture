@@ -4,7 +4,7 @@ import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 
 export const userService = () => {
-  const { backendUrl, setToken } = useContext(ShopContext);
+  const { backendUrl, setToken, token } = useContext(ShopContext);
   const resource = "/api/users/";
 
   const LoginUser = async ({ email, password }) => {
@@ -59,20 +59,35 @@ export const userService = () => {
     }
   };
 
-  const UpdateUser = (patch) => {
-    setUser((prev) => {
-      const next =
-        typeof patch === "function"
-          ? patch(prev || {})
-          : { ...(prev || {}), ...patch };
-      try {
-        localStorage.setItem("user", JSON.stringify(next));
-      } catch (err) {
-        // ignore storage errors
+  const GetAllUser = async () => {
+    try {
+      const res = await axios.get(backendUrl + resource, {
+        headers: {
+          token: token,
+        },
+      });
+      if (res.data.success) {
+        return res.data.data;
+      } else {
+        toast.error(res.data.message);
       }
-      return next;
-    });
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message);
+    }
   };
-  const DeleteUser = async (data) => {};
-  return { LoginUser, Register, UpdateUser, DeleteUser, SendOTP, VerifyOTP };
+  const DeleteUser = async ({ userId }) => {
+    try {
+      const res = await axios.delete(backendUrl + resource + userId, {
+        headers: {
+          token,
+        },
+      });
+      return res.data;
+    } catch (err) {
+      console.error(err.message);
+      throw new Error(err.response?.data?.message || err.message);
+    }
+  };
+  return { LoginUser, Register, DeleteUser, SendOTP, VerifyOTP, GetAllUser };
 };

@@ -13,12 +13,6 @@ const generateToken = (user) => {
   );
 };
 
-// tạo token reset password (ngắn hạn)
-const generateResetToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "15m",
-  });
-};
 //service for customer
 
 const register = async ({ name, email, password }) => {
@@ -204,14 +198,24 @@ const loginAdmin = async ({ email, password }) => {
 
 const deleteUser = async (userId) => {
   const user = await User.findByIdAndDelete(userId);
-  if (!user) throw new Error("Người dùng không tồn tại");
-  return { message: "Xóa người dùng thành công" };
+  if (!user)
+    return {
+      success: false,
+      message: "Người dùng không tồn tại",
+    };
+
+  return {
+    success: true,
+    message: "Xóa người dùng thành công",
+  };
 };
 
-const updateUser = async (userId, data) => {
-  const user = await User.findByIdAndUpdate(userId, data, { new: true });
-  if (!user) throw new Error("Người dùng không tồn tại");
-  return user;
+const getAllUsers = async () => {
+  const users = await User.find();
+
+  const result = users.filter((user) => user.role !== "admin");
+
+  return result;
 };
 
 module.exports = {
@@ -225,6 +229,7 @@ module.exports = {
   sendOTP,
   verifyOTP,
   deleteUser,
-  updateUser,
+
   loginAdmin,
+  getAllUsers,
 };

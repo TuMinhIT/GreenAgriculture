@@ -131,9 +131,10 @@ const getMyProfile = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    await userService.deleteUser(req.params.id);
-    res.json({ message: "Xóa người dùng thành công" });
+    const result = await userService.deleteUser(req.params.id);
+    res.json(result);
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };
@@ -150,8 +151,14 @@ const updateUser = async (req, res, next) => {
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await userService.getAllUsers();
-    res.json(users);
+    if (users) {
+      res.json({
+        success: true,
+        data: users,
+      });
+    }
   } catch (err) {
+    console.log(err.message);
     next(err);
   }
 };
