@@ -1,14 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddProduct from "../components/products/AddProduct";
 import { ProductsService } from "../service/productsService";
-import { ShopContext } from "../context/ShopContext";
 
 import ProductLine from "../components/products/ProductLine";
 import EmptyState from "../components/EmptyState";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../components/Spinner";
 import Search from "../components/Search";
-import { toast } from "react-toastify";
+
 const Products = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");

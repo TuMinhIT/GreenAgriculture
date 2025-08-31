@@ -89,5 +89,107 @@ export const userService = () => {
       throw new Error(err.response?.data?.message || err.message);
     }
   };
-  return { LoginUser, Register, DeleteUser, SendOTP, VerifyOTP, GetAllUser };
+
+  const GetUserInfo = async () => {
+    try {
+      const res = await axios.get(
+        backendUrl + resource + "profile",
+
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data.data;
+      } else {
+        toast.error(res.data.message);
+      }
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+
+  const UpdateUser = async ({ userInfo }) => {
+    try {
+      const res = await axios.put(
+        backendUrl + resource + "profile",
+        {
+          user: userInfo,
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data.data;
+      } else {
+        console.log(res.data);
+        toast.error(res.data.message);
+      }
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+
+  const ChangePassword = async ({ currentPassword, newPassword }) => {
+    try {
+      const res = await axios.post(
+        backendUrl + resource + "profile/change-password",
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            token,
+          },
+        }
+      );
+      if (res.data.success) {
+        return res.data;
+      } else {
+        console.log(res.data);
+        toast.error(res.data.message);
+      }
+      return [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+
+  const GetSummary = async () => {
+    try {
+      const res = await axios.get(backendUrl + "/api/summary", {
+        headers: {
+          token,
+        },
+      });
+
+      return res.data;
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
+  };
+  return {
+    LoginUser,
+    Register,
+    DeleteUser,
+    SendOTP,
+    VerifyOTP,
+    GetAllUser,
+    GetUserInfo,
+    UpdateUser,
+    ChangePassword,
+    GetSummary,
+  };
 };

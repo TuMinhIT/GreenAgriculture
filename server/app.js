@@ -23,7 +23,7 @@ const couponRoutes = require("./routes/coupon.route");
 const cartRoutes = require("./routes/cart.route");
 const brandRoutes = require("./routes/brand.route");
 const orderRoutes = require("./routes/order.route");
-
+const summaryRoutes = require("./routes/summary.route");
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/brands", brandRoutes);
@@ -32,7 +32,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
-
+app.use("/api/summary", summaryRoutes);
 // Test API thử
 app.get("/", (req, res) => {
   res.status(200).json({

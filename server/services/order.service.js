@@ -36,7 +36,7 @@ exports.getAllByUser = async (userId) => {
 exports.getAllOrders = async () => {
   return await Order.find()
     .populate("userId", "name email")
-    .populate("items.productId", "name");
+    .populate("items.product");
 };
 
 // Lấy đơn hàng theo ID
@@ -48,12 +48,17 @@ exports.getOrderById = async (orderId) => {
 
 // Cập nhật trạng thái đơn hàng
 exports.updateOrderStatus = async (orderId, status) => {
-  return await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+  const order = await Order.findById(orderId);
+  order.status = status;
+  order.save();
+
+  return order.status;
 };
 
 // Xóa đơn hàng
 exports.deleteOrder = async (orderId) => {
-  return await Order.findByIdAndDelete(orderId);
+  await Order.findByIdAndDelete(orderId);
+  return [];
 };
 
 // Lấy đơn hàng của người dùng theo ID

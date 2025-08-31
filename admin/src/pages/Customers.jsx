@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Trash2, User as UserIcon, Mail, Phone, Shield } from "lucide-react";
 import { userService } from "../service/userService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
