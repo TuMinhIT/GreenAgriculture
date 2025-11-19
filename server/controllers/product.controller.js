@@ -3,7 +3,6 @@ const productService = require("../services/product.service");
 
 const createProduct = async (req, res, next) => {
   try {
-    console.log("hello");
     const newProduct = await productService.createProduct(req.body, req.files);
     res.status(201).json({
       success: true,
