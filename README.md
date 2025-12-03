@@ -95,7 +95,7 @@ npm run dev
 Truy cập: http://localhost:5174
 
 ## 👨‍💻 Tác giả
-**Võ Minh Tú – TuMinhIT**
+**Võ Minh Tú – TuMinhIT**  
 **Trịnh Minh Thắng – mthegn1212/mthegn3003** GitHub: github.com/mthegn1212
 
 ## 🤝 Đóng góp
